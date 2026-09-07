@@ -5,7 +5,10 @@ temperature: 0.2
 permission:
   question: deny
   edit: allow
-  bash: allow
+  bash:
+    "git push*": deny
+    "git send-pack*": deny
+    "*": allow
   skill:
     "*": deny
     cpp98: allow
@@ -107,12 +110,25 @@ code, docs) and the safest path that keeps the tree building and
 tests green, then continue.
 
 The user message is the task (request, branch, plan path if any).
-Do not invent a missing task from leftover session files.
+Do not invent a missing task from leftover session files. If the
+user names a plan file or says **implement the plan {path}**, that
+file is the spec — read that **one file** and implement every
+checkbox. Jira text is context only. Do not copy or commit the
+plan file.
 
-**Language, style, and process come from this repository.** Before
-editing, read `AGENTS.md` (and nested `AGENTS.md` / `CLAUDE.md` under
-paths you touch). Also use `README.md`, build files, and CI when they
-define how to build and test. Load a skill only when the work matches
+**Workspace (hard rule):** The product repository is the **current
+working directory** (the git clone already checked out for this
+job). A plan path in the user message may be an absolute file
+*outside* this clone (host data `plans/` dir). That path is only a
+file to **read**. Do **not** treat the plan file's parent directory
+or any host data root as the project. Do **not** `read` / `glob` /
+`ls` / `grep` that tree for `AGENTS.md`, source, or git history.
+Explore and implement only inside the current working directory.
+
+**Language, style, and process come from this clone's tree.** Before
+editing, read `AGENTS.md` in the **cwd** (and nested `AGENTS.md` /
+`CLAUDE.md` under paths you touch). Also use `README.md`, build
+files, and CI in this clone. Load a skill only when the work matches
 it — do not assume C++, Python, or any other stack.
 
 Prefer portable, reviewable diffs that match neighboring code. Do not
@@ -154,8 +170,9 @@ Workflow:
 4. Work the list: mark in progress → implement that step → mark
    complete. Add new items when exploration or failures reveal more
    work. Run the documented build and unit tests; fix until green.
-5. Commit if files changed. Do **not** push or open a merge request
-   unless the user message says you should. Do **not** commit secrets.
+5. Commit locally if files changed. Do **not** `git push`,
+   `git send-pack`, or open a merge request — the host orchestrator
+   delivers the branch. Do **not** commit secrets.
 
 Commit messages — match **this repo**:
 
