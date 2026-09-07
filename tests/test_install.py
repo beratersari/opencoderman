@@ -101,6 +101,56 @@ class ReplaceInstall(unittest.TestCase):
         self.assertIn("machine-learning", skills)
         self.assertGreaterEqual(len(skills), 70)
 
+    def test_derman_plan_bash_is_git_read_only(self) -> None:
+        text = (ROOT / "agents" / "derman-plan.md").read_text(encoding="utf-8")
+        bash = text.split("bash:", 1)[1].split("edit:", 1)[0]
+        self.assertRegex(bash, r'"\*"\s*:\s*deny')
+        for getter in (
+            '"git log*"',
+            '"git show*"',
+            '"git status*"',
+            '"git blame*"',
+            '"git rev-parse*"',
+            '"git ls-files*"',
+            '"git show-ref*"',
+            '"git for-each-ref*"',
+            '"git reflog*"',
+            '"git branch --show-current*"',
+            '"git tag -l*"',
+            '"git remote -v*"',
+            '"git stash list*"',
+            '"git config --get*"',
+            '"rg *"',
+        ):
+            self.assertIn(getter, bash, f"missing getter allow {getter}")
+        self.assertNotIn("git-commits: allow", text)
+        self.assertNotIn('"git push*"', bash)
+        self.assertNotIn('"git commit*"', bash)
+        self.assertNotIn('"git add*"', bash)
+        self.assertNotIn('"git checkout*"', bash)
+        self.assertNotIn('"git reset*"', bash)
+
+    def test_derman_build_bash_denies_push(self) -> None:
+        text = (ROOT / "agents" / "derman-build.md").read_text(encoding="utf-8")
+        self.assertIn('"git push*"', text)
+        self.assertIn('"git send-pack*"', text)
+        self.assertIn("git-commits: allow", text)
+        self.assertIn("Do **not** `git push`", text)
+        self.assertIn("current working directory", text)
+
+    def test_derman_agents_do_not_treat_host_data_dir_as_the_repo(self) -> None:
+        for name in ("derman-plan.md", "derman-build.md"):
+            text = (ROOT / "agents" / name).read_text(encoding="utf-8")
+            self.assertNotIn("KAN-481", text, name)
+            self.assertNotIn("C:\\vd\\yaver", text, name)
+            self.assertNotIn("/vd/yaver", text, name)
+            self.assertIn("current working directory", text, name)
+            self.assertIn("parent directory", text, name)
+            self.assertIn("host data", text, name)
+        plan = (ROOT / "agents" / "derman-plan.md").read_text(encoding="utf-8")
+        self.assertIn("PLAN_DONE", plan)
+        self.assertIn("questions: none", plan)
+
     def test_derman_build_allows_every_shipped_skill(self) -> None:
         text = (ROOT / "agents" / "derman-build.md").read_text(encoding="utf-8")
         skills = [p.name for p in install.list_skill_dirs(ROOT)]
