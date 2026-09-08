@@ -51,7 +51,7 @@ jobs:
           test -f "$backup/old.txt"
           cfg_backup=$(ls -d "$CI_HOME/.config"/opencode_backup_* | head -1)
           test -f "$cfg_backup/agents/stale.md"
-          test -f "$CI_HOME/.opencode/agents/gitlab-reviewer.md"
+          test -f "$CI_HOME/.opencode/agents/code-reviewer.md"
           test -f "$CI_HOME/.opencode/skills/cpp98/SKILL.md"
           python - <<PY
           import install
@@ -75,7 +75,7 @@ jobs:
           ART_HOME="${RUNNER_TEMP}/oc-from-art"
           python "$dest/install.py" --root "$dest" --user-home "$ART_HOME" --require-binary
           test -x "$ART_HOME/.opencode/bin/opencode"
-          test -f "$ART_HOME/.opencode/agents/gitlab-reviewer.md"
+          test -f "$ART_HOME/.opencode/agents/code-reviewer.md"
           test ! -e "$ART_HOME/.config/opencode"
           echo "name=$(basename "$dest")" >> "$GITHUB_OUTPUT"
           echo "dir=$dest" >> "$GITHUB_OUTPUT"
@@ -133,7 +133,7 @@ jobs:
           $cfgBackup = Get-ChildItem -Path (Join-Path $ciHome ".config") -Directory -Filter "opencode_backup_*" | Select-Object -First 1
           if (-not $cfgBackup) { throw "expected .config/opencode_backup_*" }
           if (-not (Test-Path (Join-Path $cfgBackup.FullName "agents\stale.md"))) { throw "config backup missing stale.md" }
-          if (-not (Test-Path (Join-Path $ciHome ".opencode\agents\gitlab-reviewer.md"))) { throw "gitlab-reviewer agent missing" }
+          if (-not (Test-Path (Join-Path $ciHome ".opencode\agents\code-reviewer.md"))) { throw "code-reviewer agent missing" }
           if (-not (Test-Path (Join-Path $ciHome ".opencode\skills\cpp98\SKILL.md"))) { throw "cpp98 skill missing" }
           python -c @"
           import install
@@ -158,7 +158,7 @@ jobs:
           $artHome = Join-Path $env:RUNNER_TEMP "oc-from-art"
           python (Join-Path $dest "install.py") --root $dest --user-home $artHome --require-binary
           if (-not (Test-Path (Join-Path $artHome ".opencode\bin\opencode.exe"))) { throw "CLI missing after artifact install" }
-          if (-not (Test-Path (Join-Path $artHome ".opencode\agents\gitlab-reviewer.md"))) { throw "agent missing after artifact install" }
+          if (-not (Test-Path (Join-Path $artHome ".opencode\agents\code-reviewer.md"))) { throw "agent missing after artifact install" }
           if (Test-Path (Join-Path $artHome ".config\opencode")) { throw "artifact install must not write ~/.config/opencode" }
           $name = Split-Path -Leaf $dest
           Add-Content -Path $env:GITHUB_OUTPUT -Value "name=$name"

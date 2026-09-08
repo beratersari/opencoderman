@@ -1,7 +1,7 @@
 # OpenCoderman
 
 OpenCode agents and a general skill library. One home: `~/.opencode`.
-The `gitlab-reviewer` agent is OpenCoderman. **derman-build**
+The `code-reviewer` agent is OpenCoderman. **derman-build**
 implements; **derman-plan** plans. They are general unattended
 agents, not stock OpenCode `build` / `plan`. Language, style, build
 commands, and commit format come from the target repo (`AGENTS.md`
@@ -10,7 +10,7 @@ every `skills/*/SKILL.md`. Each skill says when to load.
 
 ```
 agents/           # -> ~/.opencode/agents/<name>.md
-  gitlab-reviewer.md  # OpenCoderman GitLab reviewer (allow-list of skills)
+  code-reviewer.md    # Reviewer for GitLab MRs and Azure PRs
   derman-build.md     # General unattended implementer (not stock build)
   derman-plan.md      # General unattended planner (not stock plan)
 skills/           # -> ~/.opencode/skills/<name>/SKILL.md
@@ -25,7 +25,7 @@ Load the skill that matches the files you touch.
 `java` `kotlin` `csharp` `swift` `php` `ruby` `dart` `scala`
 `elixir` `shell` `powershell` `lua` `r-lang`
 
-**C++ (when the repo is C++):** `cpp98` `modern-cpp`
+**C++ (when the repo is C++):** `cpp` `cpp98` `modern-cpp`
 `cpp-memory-safety` `cpp-concurrency` `cpp-exceptions`
 `cpp-templates` `cpp-headers-odr` `cpp-stl` `cpp-numerics`
 `cpp-preprocessor` `cmake-cpp` `cpp-testing`

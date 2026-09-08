@@ -67,9 +67,9 @@ class PathHelpers(unittest.TestCase):
         self.assertNotIn("leftover PATH", cleaned)
 
     def test_review_agent_is_opencoderman(self) -> None:
-        text = (ROOT / "agents" / "gitlab-reviewer.md").read_text(encoding="utf-8")
+        text = (ROOT / "agents" / "code-reviewer.md").read_text(encoding="utf-8")
         self.assertIn("You are OpenCoderman", text)
-        self.assertIn("OpenCoderman GitLab merge-request reviewer", text)
+        self.assertIn("OpenCoderman code reviewer", text)
         self.assertIn("opencoderman-findings", text)
 
 
@@ -77,7 +77,7 @@ class ReplaceInstall(unittest.TestCase):
     def test_lists_shipped_agents_and_skills(self) -> None:
         agents = [p.stem for p in install.list_agent_files(ROOT)]
         skills = [p.name for p in install.list_skill_dirs(ROOT)]
-        self.assertIn("gitlab-reviewer", agents)
+        self.assertIn("code-reviewer", agents)
         self.assertIn("derman-build", agents)
         self.assertIn("derman-plan", agents)
         self.assertIn("cpp98", skills)
@@ -220,7 +220,7 @@ class ReplaceInstall(unittest.TestCase):
 
         dest = install.install(ROOT, user_home=tmp)
         self.assertTrue(dest.is_file())
-        self.assertEqual(dest, tmp / ".opencode" / "agents" / "gitlab-reviewer.md")
+        self.assertEqual(dest, tmp / ".opencode" / "agents" / "code-reviewer.md")
         self.assertFalse(old.exists())
         backups = list(tmp.glob(".opencode_backup_*"))
         self.assertEqual(len(backups), 1)
@@ -280,7 +280,7 @@ class ReplaceInstall(unittest.TestCase):
         path = install.split_path((home / ".opencode-path").read_text(encoding="utf-8"))
         self.assertNotIn(str(custom), path)
         self.assertIn(str(keep), path)
-        self.assertTrue((home / ".opencode" / "agents" / "gitlab-reviewer.md").is_file())
+        self.assertTrue((home / ".opencode" / "agents" / "code-reviewer.md").is_file())
         self.assertFalse((home / ".config" / "opencode").exists())
 
     def test_shared_bin_files_kept_path_unhooked(self) -> None:
@@ -369,7 +369,7 @@ class ReplaceInstall(unittest.TestCase):
         install.install(pack, user_home=home)
         dest = home / ".opencode" / "bin" / install.binary_name()
         self.assertFalse(dest.exists())
-        self.assertTrue((home / ".opencode" / "agents" / "gitlab-reviewer.md").is_file())
+        self.assertTrue((home / ".opencode" / "agents" / "code-reviewer.md").is_file())
         self.assertFalse((home / ".config" / "opencode").exists())
 
     def test_require_binary_fails_without_cli(self) -> None:

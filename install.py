@@ -626,9 +626,13 @@ def install(
     write_files(root, user_home=user_home)
     install_cli_binary(root, user_home=user_home, required=require_binary)
     prepend_to_path(user_home=user_home)
-    dest = opencode_home(user_home) / "agents" / "gitlab-reviewer.md"
+    dest = opencode_home(user_home) / "agents" / "code-reviewer.md"
     if not dest.is_file():
-        raise FileNotFoundError(f"gitlab-reviewer agent missing after install: {dest}")
+        raise FileNotFoundError(f"code-reviewer agent missing after install: {dest}")
+    alias = opencode_home(user_home) / "agents" / "gitlab-reviewer.md"
+    if not alias.is_file():
+        alias.write_text(dest.read_text(encoding="utf-8"), encoding="utf-8")
+        print(f"[OK] Agent gitlab-reviewer alias -> {alias}")
     return dest
 
 

@@ -7,8 +7,8 @@ setlocal EnableDelayedExpansion
 set "HERE=%~dp0"
 set "HERE=%HERE:~0,-1%"
 cd /d "%HERE%"
-if not exist "%HERE%\agents\gitlab-reviewer.md" (
-    echo [ERROR] agents\gitlab-reviewer.md missing. Run this from the git checkout.
+if not exist "%HERE%\agents\code-reviewer.md" (
+    echo [ERROR] agents\code-reviewer.md missing. Run this from the git checkout.
     exit /b 1
 )
 set "PY="

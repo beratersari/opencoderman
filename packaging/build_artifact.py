@@ -210,7 +210,7 @@ def stage(root: Path, dest: Path) -> Path:
     if dest.exists():
         shutil.rmtree(dest)
     dest.mkdir(parents=True)
-    review = root / "agents" / "gitlab-reviewer.md"
+    review = root / "agents" / "code-reviewer.md"
     if not review.is_file():
         raise SystemExit(f"missing {review}")
     for name in INCLUDE:

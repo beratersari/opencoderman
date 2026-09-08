@@ -4,8 +4,8 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE"
-if [[ ! -f "$HERE/agents/gitlab-reviewer.md" ]]; then
-  echo "[ERROR] agents/gitlab-reviewer.md missing. Run this from the git checkout."
+if [[ ! -f "$HERE/agents/code-reviewer.md" ]]; then
+  echo "[ERROR] agents/code-reviewer.md missing. Run this from the git checkout."
   exit 1
 fi
 if command -v python3 >/dev/null 2>&1; then

@@ -21,7 +21,7 @@ class Artifact(unittest.TestCase):
     def test_stage_contains_agents_and_installers(self) -> None:
         dest = Path(tempfile.mkdtemp(prefix="ocfg-art-")) / "pack"
         _load_builder().stage(ROOT, dest)
-        self.assertTrue((dest / "agents" / "gitlab-reviewer.md").is_file())
+        self.assertTrue((dest / "agents" / "code-reviewer.md").is_file())
         self.assertTrue((dest / "skills" / "cpp98" / "SKILL.md").is_file())
         self.assertTrue((dest / "install.py").is_file())
         self.assertTrue((dest / "install.bat").is_file())
@@ -51,7 +51,7 @@ class Artifact(unittest.TestCase):
         workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
         self.assertIn("upload-artifact", workflow)
         self.assertIn("build_artifact.py", workflow)
-        self.assertIn("gitlab-reviewer.md", workflow)
+        self.assertIn("code-reviewer.md", workflow)
         self.assertIn("PYTHONSAFEPATH", workflow)
         self.assertIn("vendor/bin/linux/opencode", workflow)
         self.assertIn("vendor\\bin\\windows\\opencode.exe", workflow)
