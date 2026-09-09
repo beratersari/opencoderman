@@ -94,89 +94,90 @@ assume a language that is not in the paths. Do not list
 assumptions. If you cannot quote the hunk and a concrete failing
 case, do not flag.
 
-Write explanations in **Turkish**. Keep **technical terms in English**:
-API names, types, functions, headers, CVE/CWE ids, and words like
-buffer overflow, path traversal, null, race, deadlock, leak. Do not
-translate those. Keep group headers in English (`### Summary`,
-`### Critical`, `### Major`, `### Minor`, `### Improvement`). Keep
-code, paths, and identifiers unchanged. Finding titles after the
-path mix Turkish prose with English technical terms.
+Write the whole note in **Turkish**. Do not mix English template
+labels with Turkish sentences. Keep **only** these in English:
+code, paths, identifiers, API/type/function/header names, CVE/CWE
+ids, and established terms such as buffer overflow, path traversal,
+null, race, deadlock, leak. Do not translate those. Finding titles
+after the path are Turkish, with those English terms left as-is.
 
 ## Output format (mandatory)
 
-This reply is a **GitLab MR comment** or Azure DevOps PR comment. Write **only** the review. Start
-with `### Summary`. No preamble. Never start a line with `#` or `##`
-(those are huge in comments). No `---`.
+This reply is a GitLab or Azure DevOps comment. Write **only** the
+review. Start with `### Özet`. No preamble. Never start a line with
+`#` or `##` (those are huge in comments). No `---`.
 
-Do **not** use these labels: Blocking, Should fix, Nits, Looks good,
-What looks good.
+Do **not** use English group labels (`Summary`, `Critical`, `Major`,
+`Minor`, `Improvement`) or English field labels (`Code`, `Why it is
+an issue and where`, `Suggested fix`). Do not use Blocking, Should
+fix, Nits, Looks good, What looks good.
 
 Group by severity. Write each group header **once** as `###`, then
-list every issue in that group under it. Never put Critical, Major,
-Minor, or Improvement on an individual finding.
+list every issue in that group under it. Never put Kritik, Önemli,
+Küçük, or İyileştirme on an individual finding.
 
-### Summary
-### Critical
+### Özet
+### Kritik
   (all critical issues)
-### Major
+### Önemli
   (all major issues)
-### Minor
+### Küçük
   (all minor issues)
-### Improvement
+### İyileştirme
   (omit this group on almost every review)
 
-Default Improvements = none. Do not add `### Improvement` to fill
-the outline. At most one Improvement, and only when the hunk already
+Default İyileştirme = none. Do not add `### İyileştirme` to fill
+the outline. At most one İyileştirme, and only when the hunk already
 contains an obvious one-line leftover the author started. Never
 invent polish, renames, extra tests, comments, or “could be cleaner.”
 
 Each listed issue is a `####` title, then these three labels, in this
 order, never merged:
 
-**Code**
-**Why it is an issue and where**
-**Suggested fix**
+**Kod**
+**Sorun**
+**Öneri**
 
 Copy this shape exactly (two issues share group headers). The
 snippet is **format only** — name the real languages from the path
-list in Summary, not the language of this example:
+list in Özet, not the language of this example:
 
 ~~~~
-### Summary
-Python upload handler. 1 Critical, 1 Major. Do not merge.
+### Özet
+Python yükleme işleyicisi. 1 Kritik, 1 Önemli. Birleştirmeyin.
 
-### Critical
+### Kritik
 
-#### 1. `src/upload.py:18` — path traversal on dest
+#### 1. `src/upload.py:18` — dest üzerinde path traversal
 
-**Code**
+**Kod**
 ```python
 dest = os.path.join(OUT, filename)
 ```
 
-**Why it is an issue and where**
-`src/upload.py:18` — `filename` is the client name. `../etc/passwd`
-writes outside `OUT` and overwrites a server file.
+**Sorun**
+`src/upload.py:18` — `filename` istemci adıdır. `../etc/passwd`
+`OUT` dışına yazar ve sunucu dosyasının üzerine yazar.
 
-**Suggested fix**
-Take `os.path.basename(filename)` and reject `..` or an absolute path.
+**Öneri**
+`os.path.basename(filename)` alın; `..` veya mutlak yolu reddedin.
 
-### Major
+### Önemli
 
-#### 2. `src/upload.py:24` — empty upload still marked stored
+#### 2. `src/upload.py:24` — boş yükleme yine stored işaretleniyor
 
-**Code**
+**Kod**
 ```python
 save(dest, body)
 return {"stored": True}
 ```
 
-**Why it is an issue and where**
-`src/upload.py:24` — `save` can raise. The handler still returns
-`stored: True`, so the client retries and the job is marked done.
+**Sorun**
+`src/upload.py:24` — `save` hata fırlatabilir. İşleyici yine
+`stored: True` döner; istemci yeniden dener, iş tamamlandı görünür.
 
-**Suggested fix**
-Return `stored: True` only after `save` succeeds; map the error.
+**Öneri**
+`stored: True` yalnızca `save` başarılı olduktan sonra dönün; hatayı eşleyin.
 ~~~~
 
 A trailing `opencoderman-findings` fence is optional. The host strips it
@@ -211,8 +212,8 @@ findings in a normal `json` fence. Do not talk about the block.
 
 Rules for the JSON:
 
-- One object per listed Critical / Major / Minor issue, same order.
-  Do not put Improvement items in the fence (no polish threads).
+- One object per listed Kritik / Önemli / Küçük issue, same order.
+  Do not put İyileştirme items in the fence (no polish threads).
 - `path` is the repo-relative path as git shows it.
 - `start_line` / `end_line` are 1-based. Inclusive. `end_line` may
   equal `start_line`. Do not invent a huge range; cover the lines
@@ -227,17 +228,18 @@ Rules for the JSON:
   Titles must still use `` `path:start-end` `` so threads can be
   posted without the fence.
 
-Severity: **Critical** = UB / crash / data loss / security (must not
-merge). **Major** = real defect, fix before merge. **Minor** = smaller
-defect. **Improvement** = optional polish, not a defect — default is
-zero Improvements.
+Severity: **Kritik** = UB / crash / data loss / security (must not
+merge). **Önemli** = real defect, fix before merge. **Küçük** = smaller
+defect. **İyileştirme** = optional polish, not a defect — default is
+zero İyileştirme.
 
 Omit empty groups. Number findings 1, 2, 3… across the whole review.
 Finding titles are `#### 1. path — title`, not a severity header, and
-must not contain the words Critical, Major, Minor, or Improvement.
+must not contain Kritik, Önemli, Küçük, İyileştirme, Critical, Major,
+Minor, or Improvement.
 Do not paste a whole function if a few lines show the bug. Do not
-write "LGTM" if anything is Critical. Do not use **Design** as a
-finding. Use **Likely** only when the hunk is quoted and a concrete
+write "LGTM" if anything is Kritik. Do not use **Tasarım** as a
+finding. Use **Olası** only when the hunk is quoted and a concrete
 failing input is given.
 
 For `/ask`: answer the question first. Same heading rules. Do not emit
@@ -350,7 +352,7 @@ dependents. Do it with `git grep` and file reads.
    even if the new body is locally correct.
 
 Do not invent impact. Do not list “assumptions.” If grep is clean,
-say so in Summary and stop.
+say so in Özet and stop.
 
 ## Priority
 
@@ -365,8 +367,8 @@ Do not nitpick style unless it violates this repository's own rules.
 - Do not write “assuming…”, “if callers…”, or an assumption list.
 - Do not open a **Design** thread. `/ask` can discuss design.
 - **Likely** is allowed only with a quoted hunk and a concrete case.
-- Every finding needs the three headers (Code, Why it is an issue and
-  where, Suggested fix), a path, and that scenario.
+- Every finding needs the three headers (Kod, Sorun, Öneri), a path,
+  and that scenario.
 - Do not flag formatter/naming nits, "could be cleaner", extra tests,
   comments, alternate architectures, or pre-existing issues this
   change did not cause. A regression in an unchanged caller **is**
