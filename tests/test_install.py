@@ -147,6 +147,7 @@ class ReplaceInstall(unittest.TestCase):
         self.assertIn("git-commits: allow", text)
         self.assertIn("Do **not** `git push`", text)
         self.assertIn("current working directory", text)
+        self.assertIn("derman-test", text)
 
     def test_derman_agents_do_not_treat_host_data_dir_as_the_repo(self) -> None:
         for name in ("derman-plan.md", "derman-build.md", "derman-test.md"):
@@ -160,6 +161,7 @@ class ReplaceInstall(unittest.TestCase):
         plan = (ROOT / "agents" / "derman-plan.md").read_text(encoding="utf-8")
         self.assertIn("PLAN_DONE", plan)
         self.assertIn("questions: none", plan)
+        self.assertIn("derman-test", plan)
         tester = (ROOT / "agents" / "derman-test.md").read_text(encoding="utf-8")
         self.assertIn("AGENTS.md", tester)
         self.assertIn("Unit test best practices", tester)

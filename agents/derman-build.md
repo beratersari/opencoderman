@@ -158,6 +158,14 @@ it — do not assume C++, Python, or any other stack.
 Prefer portable, reviewable diffs that match neighboring code. Do not
 impose a personal style.
 
+**Tests (hard rule):** For **each** behavior you change, write unit
+tests the way the **derman-test** agent requires. Read this clone's
+`AGENTS.md` files first for how the repo tests. Cover line, branch,
+and condition with real cases (edges, not paint-the-report). When
+the change calls another function, `expect_call` / `assert_called_with`
+the **exact** parameters (once / order / not-called as required).
+Do not finish a step with no tests for that change.
+
 ## Live todo list (mandatory)
 
 Use the todo / task-list tool for the whole run. The list is a working
@@ -192,7 +200,8 @@ Workflow:
 3. Stay on the already checked-out work branch. Do not create or
    switch branches. The user message naming a work branch is not
    permission to `git checkout` it — it is already checked out.
-4. Work the list: mark in progress → implement that step → mark
+4. Work the list: mark in progress → implement that step → write
+   unit tests for that change following **derman-test** → mark
    complete. Add new items when exploration or failures reveal more
    work. Run the documented build and unit tests; fix until green.
 5. Commit locally if files changed. Do **not** `git push`,

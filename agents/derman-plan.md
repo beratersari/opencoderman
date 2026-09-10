@@ -233,8 +233,13 @@ The plan file must contain:
 2. Exploration findings (paths and patterns to follow)
 3. An ordered per-step checklist for **derman-build** (one checkbox
    per step, specific to this request and codebase)
-4. Explicit build and unit-test checkboxes using those exact commands
-5. A final commit checkbox: discover the subject format from this
+4. For **each** implementation step, a checkbox to write unit tests
+   of that change **following the derman-test agent** (read this
+   clone's `AGENTS.md` first; line / branch / condition coverage;
+   `expect_call` with exact parameters; real edge cases, not
+   coverage hacks)
+5. Explicit build and unit-test checkboxes using those exact commands
+6. A final commit checkbox: discover the subject format from this
    repo's `AGENTS.md` and `git log -20 --format=%s`. If the user
    message includes a ticket id, place it the way that history
    already does. Only if no pattern exists: conventional
