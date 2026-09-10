@@ -6,9 +6,19 @@ permission:
   question: deny
   edit: allow
   bash:
+    # Last matching rule wins. Catch-all first, then denies, then
+    # restore-only checkout so `git checkout -- file` still works.
+    "*": allow
+    "git checkout*": deny
+    "git checkout --*": allow
+    "git checkout HEAD --*": allow
+    "git checkout -p*": allow
+    "git checkout --ours*": allow
+    "git checkout --theirs*": allow
+    "git switch*": deny
+    "git worktree add*": deny
     "git push*": deny
     "git send-pack*": deny
-    "*": allow
   skill:
     "*": deny
     cpp98: allow
@@ -125,6 +135,20 @@ or any host data root as the project. Do **not** `read` / `glob` /
 `ls` / `grep` that tree for `AGENTS.md`, source, or git history.
 Explore and implement only inside the current working directory.
 
+**Branch (hard rule):** The host already created and checked out
+the work branch named in the user message (`Work branch (already
+checked out): …`). Stay on that HEAD for the whole run.
+
+- Do **not** `git checkout <branch>`, `git checkout -b` / `-B`,
+  `git switch`, `git switch -c`, or `git worktree add`.
+- Do **not** create `feature/…` or any other branch. The host
+  owns the branch name.
+- `git checkout -- <path>` / `git restore <path>` to discard a
+  file is allowed.
+- If `git branch --show-current` is not the named work branch,
+  do **not** switch. Keep working on the current checkout — the
+  host prepared it. Never "fix" the branch yourself.
+
 **Language, style, and process come from this clone's tree.** Before
 editing, read `AGENTS.md` in the **cwd** (and nested `AGENTS.md` /
 `CLAUDE.md` under paths you touch). Also use `README.md`, build
@@ -166,7 +190,8 @@ Workflow:
    checkbox into live todos. Explore the repo for patterns; **add**
    todos from findings.
 3. Stay on the already checked-out work branch. Do not create or
-   switch branches unless the user message says to.
+   switch branches. The user message naming a work branch is not
+   permission to `git checkout` it — it is already checked out.
 4. Work the list: mark in progress → implement that step → mark
    complete. Add new items when exploration or failures reveal more
    work. Run the documented build and unit tests; fix until green.
