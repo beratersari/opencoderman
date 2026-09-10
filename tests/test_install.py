@@ -170,6 +170,11 @@ class ReplaceInstall(unittest.TestCase):
         self.assertIn("Not hacky", tester)
         self.assertIn("expect_call", tester)
         self.assertIn("exact", tester.lower())
+        self.assertIn("assert_not_called", tester)
+        self.assertIn("assert_has_calls", tester)
+        self.assertIn("must fail", tester)
+        self.assertIn("Boundaries", tester)
+        self.assertIn("When you are done", tester)
 
     def test_derman_build_allows_every_shipped_skill(self) -> None:
         text = (ROOT / "agents" / "derman-build.md").read_text(encoding="utf-8")

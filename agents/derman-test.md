@@ -132,10 +132,48 @@ write a **real** test of that behavior.
   not use `ANY` / wildcards unless AGENTS.md says the
   value is non-deterministic. One test per distinct call
   shape (success args, error args, omitted optional).
+  Also require:
+  - `assert_called_once` / `assert_called_once_with` when
+    the path must call exactly once
+  - `assert_has_calls` with order when the path makes a
+    sequence of calls
+  - `assert_not_called` on collaborators that must stay
+    quiet on that path
+  After you write the expect, delete that production call
+  in your head: the test **must fail**. If it still
+  passes, it was not covering the call.
 
-Keep going until the report shows those lines, branches, and
-conditions covered, or until a remaining miss is a documented
-production defect (write the failing contract test and stop).
+Keep going until the report shows those lines, branches,
+and conditions covered **and** every outbound call has an
+exact-args expect, or until a remaining miss is a
+documented production defect (write the failing contract
+test and stop).
+
+If a miss is untestable (process exit, `assert False`
+defensive), say so in that test's docstring. Do not invent
+a fake path.
+
+## Which cases to write
+
+- **Boundaries:** empty, `0`, `1`, max, `None`, missing
+  key, already-done, second call (idempotent).
+- **Equivalence classes:** one test per class, not ten
+  copies of the happy path.
+- **State machines:** each legal transition and each
+  illegal one (example: a late ERROR must not overwrite
+  COMPLETED if that is this repo's rule — read AGENTS.md).
+
+Happy path alone is not done.
+
+## When you are done
+
+Do not stop at "tests pass." Stop when:
+
+1. The coverage report for the ticket's files shows no
+   closable line, branch, or condition miss.
+2. Every outbound collaborator call has an exact-args
+   `expect_call` (or repo equivalent), plus once / order /
+   not-called where that is the contract.
 
 ## Unit test best practices
 
@@ -158,10 +196,11 @@ Use these unless **this repo's AGENTS.md** says otherwise.
 6. **Prefer real objects** for the unit under test. When
    that unit **calls** a collaborator, cover the call with
    `expect_call` / `assert_called_with` and the **exact**
-   parameters. Mock only the collaborator (or a process
-   boundary). Do not mock the unit under test. Do not
-   skip call-arg checks because a return-value assert
-   already passed.
+   parameters, plus once / order / not-called. Mock only
+   the collaborator (or a process boundary). Do not mock
+   the unit under test. Do not write a test that only
+   proves the mock was configured. Do not skip call-arg
+   checks because a return-value assert already passed.
 7. **Fail on the real bug.** A new test for a defect must fail
    before the fix and pass after. Do not assert current broken
    behavior as if it were correct.
@@ -191,7 +230,8 @@ Use these unless **this repo's AGENTS.md** says otherwise.
 
 ## What you must not change
 
-- Product / production source to "make tests pass."
+- Product / production source to "make tests pass" or to
+  make a function easier to mock.
 - Plans, prompts, or host data directories.
 - Secrets, `.env`, or credentials.
 
