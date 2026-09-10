@@ -123,6 +123,15 @@ write a **real** test of that behavior.
 - **Condition:** split compound guards. If the code is
   `if a and b:`, you need cases where `a` is false, `b` is
   false, and both are true. Same for `or`.
+- **Calls:** when a function calls another function, cover
+  that call. Use `expect_call` (or this repo's equivalent:
+  `assert_called_with`, `assert_called_once_with`,
+  `EXPECT_CALL`) with the **exact** parameters the
+  production code must pass — every positional arg and
+  every keyword. Do not use `assert_called()` alone. Do
+  not use `ANY` / wildcards unless AGENTS.md says the
+  value is non-deterministic. One test per distinct call
+  shape (success args, error args, omitted optional).
 
 Keep going until the report shows those lines, branches, and
 conditions covered, or until a remaining miss is a documented
@@ -146,10 +155,13 @@ Use these unless **this repo's AGENTS.md** says otherwise.
    rewrite of every test.
 5. **Isolation.** Each test creates its own temp dir / store /
    data. Do not depend on run order or leftover files.
-6. **Prefer real objects** over mocks. Mock only a true
-   process boundary (HTTP, clock, subprocess) and only when
-   the repo's AGENTS.md allows it. Do not mock the unit under
-   test.
+6. **Prefer real objects** for the unit under test. When
+   that unit **calls** a collaborator, cover the call with
+   `expect_call` / `assert_called_with` and the **exact**
+   parameters. Mock only the collaborator (or a process
+   boundary). Do not mock the unit under test. Do not
+   skip call-arg checks because a return-value assert
+   already passed.
 7. **Fail on the real bug.** A new test for a defect must fail
    before the fix and pass after. Do not assert current broken
    behavior as if it were correct.
