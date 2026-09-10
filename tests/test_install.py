@@ -149,7 +149,7 @@ class ReplaceInstall(unittest.TestCase):
         self.assertIn("current working directory", text)
 
     def test_derman_agents_do_not_treat_host_data_dir_as_the_repo(self) -> None:
-        for name in ("derman-plan.md", "derman-build.md"):
+        for name in ("derman-plan.md", "derman-build.md", "derman-test.md"):
             text = (ROOT / "agents" / name).read_text(encoding="utf-8")
             self.assertNotIn("KAN-481", text, name)
             self.assertNotIn("C:\\vd\\yaver", text, name)
@@ -160,6 +160,10 @@ class ReplaceInstall(unittest.TestCase):
         plan = (ROOT / "agents" / "derman-plan.md").read_text(encoding="utf-8")
         self.assertIn("PLAN_DONE", plan)
         self.assertIn("questions: none", plan)
+        tester = (ROOT / "agents" / "derman-test.md").read_text(encoding="utf-8")
+        self.assertIn("AGENTS.md", tester)
+        self.assertIn("Unit test best practices", tester)
+        self.assertIn("unit tests", tester.lower())
 
     def test_derman_build_allows_every_shipped_skill(self) -> None:
         text = (ROOT / "agents" / "derman-build.md").read_text(encoding="utf-8")

@@ -13,6 +13,7 @@ agents/           # -> ~/.opencode/agents/<name>.md
   code-reviewer.md    # Reviewer for GitLab MRs and Azure PRs
   derman-build.md     # General unattended implementer (not stock build)
   derman-plan.md      # General unattended planner (not stock plan)
+  derman-test.md      # General unattended tester (unit tests only)
 skills/           # -> ~/.opencode/skills/<name>/SKILL.md
 ```
 
