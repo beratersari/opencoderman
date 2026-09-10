@@ -164,6 +164,10 @@ class ReplaceInstall(unittest.TestCase):
         self.assertIn("AGENTS.md", tester)
         self.assertIn("Unit test best practices", tester)
         self.assertIn("unit tests", tester.lower())
+        self.assertIn("line", tester.lower())
+        self.assertIn("branch", tester.lower())
+        self.assertIn("condition", tester.lower())
+        self.assertIn("Not hacky", tester)
 
     def test_derman_build_allows_every_shipped_skill(self) -> None:
         text = (ROOT / "agents" / "derman-build.md").read_text(encoding="utf-8")

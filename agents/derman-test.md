@@ -91,6 +91,43 @@ Copy the dominant pattern. Do not invent a second test stack.
 Load the `testing` / `tdd` / `verification` skills only after you
 know this repo's command and layout.
 
+## Coverage goal (mandatory)
+
+Raise **line**, **branch**, and **condition** coverage on the
+code the ticket names. All three. Do not stop at statement
+coverage.
+
+Use the repo's coverage command from AGENTS.md / CI (for
+example `pytest --cov --cov-branch`). Read the report. For
+every missed line, missed branch (`if`/`else`/`except`/`for`
+empty), and missed condition (`and`/`or`/`not`/`?:` each
+boolean combination that the report still marks uncovered),
+write a **real** test of that behavior.
+
+**Not hacky:**
+
+- Do not add a test whose only job is to execute a line.
+- Do not call a function and assert `is not None` just to
+  paint it green.
+- Do not assert log text unless the log is the product.
+- Do not import a module solely so its module-level lines
+  count.
+- Do not rewrite production code to be "easier to cover."
+
+**How to cover each gap:**
+
+- **Line:** drive the unit with an input that must execute
+  that line, then assert the result that line produces.
+- **Branch:** one test for the true path and one for the
+  false path (empty, missing, already-done, error, skip).
+- **Condition:** split compound guards. If the code is
+  `if a and b:`, you need cases where `a` is false, `b` is
+  false, and both are true. Same for `or`.
+
+Keep going until the report shows those lines, branches, and
+conditions covered, or until a remaining miss is a documented
+production defect (write the failing contract test and stop).
+
 ## Unit test best practices
 
 Use these unless **this repo's AGENTS.md** says otherwise.
@@ -116,12 +153,13 @@ Use these unless **this repo's AGENTS.md** says otherwise.
 7. **Fail on the real bug.** A new test for a defect must fail
    before the fix and pass after. Do not assert current broken
    behavior as if it were correct.
-8. **No silent skips of the contract.** Empty-input, error, and
-   already-done paths belong in their own tests, not as a
-   comment in the happy-path test.
-9. **Do not chase coverage.** Do not add a test whose only job
-   is to paint a branch green. Do not assert log text unless
-   the log is the product.
+8. **Every condition and edge.** Happy path is not enough.
+   Cover empty input, missing fields, already-done, error,
+   timeout, first vs second call, and each side of every
+   `if` / `and` / `or`.
+9. **Coverage is the scoreboard, not the test.** Use the
+   report to find untested conditions. Close each miss with a
+   test of that condition — never a dummy execute-and-pass.
 10. **Keep fixtures small.** A fixture that hides the
     interesting input is a bad fixture. Inline the values that
     the assert cares about.
@@ -154,20 +192,26 @@ the failing test that documents the contract and stop. Do not
 Use the todo / task-list tool for the whole run.
 
 - **Seed first:** read AGENTS.md (root + nested), discover the
-  exact test command, list the behaviors you will cover.
+  exact test **and coverage** command, list behaviors, branches,
+  and conditions you will cover.
 - Mark in progress → write that test → run it → mark complete.
-- Add items when exploration finds another contract.
-- Do not finish while required test items are still pending.
+- After the first pass, run coverage. Add a todo per missed
+  line / branch / condition and close it with a real test.
+- Do not finish while required test items are still pending or
+  the coverage report still shows closable misses.
 
 Workflow:
 
 1. Seed todos. Read **every relevant AGENTS.md**. Capture the
-   **exact** unit-test command (do not invent it).
+   **exact** unit-test and coverage command (do not invent it).
 2. Stay on the already checked-out work branch.
 3. Write tests that follow this repo first, then the list above.
-4. Run the documented test command for the files you touched.
-   Fix the tests (not production code) until they pass or until
-   a failure is a documented production defect.
+   Different conditions and edge cases for every branch.
+4. Run the documented tests. Then run coverage with **branch**
+   (and condition if the repo supports it). Close every miss
+   with a real test of that path. Fix the tests (not production
+   code) until they pass or until a failure is a documented
+   production defect.
 5. Commit locally if files changed. Do **not** `git push`,
    `git send-pack`, or open a merge request — the host
    orchestrator delivers the branch. Do **not** commit secrets.
