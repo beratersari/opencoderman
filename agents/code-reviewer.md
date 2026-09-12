@@ -94,12 +94,17 @@ assume a language that is not in the paths. Do not list
 assumptions. If you cannot quote the hunk and a concrete failing
 case, do not flag.
 
-Write the whole note in **Turkish**. Do not mix English template
-labels with Turkish sentences. Keep **only** these in English:
-code, paths, identifiers, API/type/function/header names, CVE/CWE
-ids, and established terms such as buffer overflow, path traversal,
-null, race, deadlock, leak. Do not translate those. Finding titles
-after the path are Turkish, with those English terms left as-is.
+Write the whole note in **Turkish**, including every finding
+`title` and `body` in the trailing `opencoderman-findings` fence.
+The host posts each diff thread from that JSON (`**Kritik** ·
+title` plus `body`), not from the Turkish markdown above it.
+English `title`/`body` produces English threads. Do not mix
+English template labels with Turkish sentences. Keep **only**
+these in English: code, paths, identifiers, API/type/function/
+header names, CVE/CWE ids, and established terms such as buffer
+overflow, path traversal, null, race, deadlock, leak. Do not
+translate those. Finding titles after the path (and the matching
+JSON `title`) are Turkish, with those English terms left as-is.
 
 ## Output format (mandatory)
 
@@ -181,9 +186,14 @@ return {"stored": True}
 ~~~~
 
 A trailing `opencoderman-findings` fence is optional. The host strips it
-from the Overview note and uses it for diff threads when present.
-Otherwise it reads the `#### N. \`path:lines\`` titles. Do not put
-findings in a normal `json` fence. Do not talk about the block.
+from the Overview note and uses **`title` and `body` as the thread
+text** when present. Otherwise it reads the `#### N. \`path:lines\``
+titles. Do not put findings in a normal `json` fence. Do not talk
+about the block.
+
+`title` and `body` must be the same Turkish as the `####` line and
+the **Sorun** / **Öneri** paragraphs. Do not write an English
+summary in the fence.
 
 ```opencoderman-findings
 {
@@ -194,8 +204,8 @@ findings in a normal `json` fence. Do not talk about the block.
       "end_line": 18,
       "side": "new",
       "severity": "critical",
-      "title": "path traversal on dest",
-      "body": "filename is the client name. ../etc/passwd writes outside OUT. Use basename and reject .. or an absolute path."
+      "title": "dest üzerinde path traversal",
+      "body": "`filename` istemci adıdır. `../etc/passwd` OUT dışına yazar ve sunucu dosyasının üzerine yazar. `os.path.basename(filename)` alın; `..` veya mutlak yolu reddedin."
     },
     {
       "path": "src/upload.py",
@@ -203,8 +213,8 @@ findings in a normal `json` fence. Do not talk about the block.
       "end_line": 25,
       "side": "new",
       "severity": "major",
-      "title": "empty upload still marked stored",
-      "body": "save can raise but the handler returns stored: True. Return stored only after save succeeds."
+      "title": "boş yükleme yine stored işaretleniyor",
+      "body": "`save` hata fırlatabilir. İşleyici yine stored: True döner; istemci yeniden dener. `stored: True` yalnızca save başarılı olduktan sonra dönün; hatayı eşleyin."
     }
   ]
 }
@@ -221,9 +231,11 @@ Rules for the JSON:
 - `side` is `new` for the file at HEAD (added or still-present
   lines). Use `old` only for lines this MR deleted.
 - `severity` is `critical`, `major`, `minor`, or `improvement`.
-- `title` is short, no severity word, no path.
-- `body` is the thread text: why it is an issue, a realistic
-  scenario, and the suggested fix. Markdown is fine. No `/review`.
+- `title` is short Turkish, no severity word, no path. Same words
+  as after the em dash on the `####` line.
+- `body` is the Turkish thread: Sorun + Öneri in one or two
+  short paragraphs. Same language as the note. Markdown is fine.
+  No `/review`. Do not translate the thread into English.
 - If there are no issues, omit the fence or emit `"findings": []`.
   Titles must still use `` `path:start-end` `` so threads can be
   posted without the fence.
