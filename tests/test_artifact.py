@@ -70,8 +70,9 @@ class Artifact(unittest.TestCase):
         (dest / "install.py").write_text("x", encoding="utf-8")
         (dest / "vendor" / "bin" / "linux").mkdir(parents=True)
         (dest / "vendor" / "bin" / "linux" / "opencode").write_bytes(b"CLI")
-        zipped = _load_builder().write_zip(dest, dest.with_suffix(".zip"))
+        zipped = _load_builder().write_zip(dest, dest.parent / f"{dest.name}.zip")
         self.assertTrue(zipped.is_file())
+        self.assertEqual(zipped.name, "opencoderman-1.18.10-linux.zip")
         with zipfile.ZipFile(zipped) as zf:
             names = set(zf.namelist())
         self.assertIn("opencoderman-1.18.10-linux/install.py", names)

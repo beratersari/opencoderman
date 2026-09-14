@@ -295,7 +295,7 @@ def main(argv: list[str] | None = None) -> int:
         if attached is None:
             raise SystemExit("failed to attach OpenCode CLI")
     if args.zip:
-        zipped = write_zip(path, path.with_suffix(".zip"))
+        zipped = write_zip(path, path.parent / f"{path.name}.zip")
         print(zipped.resolve())
         return 0
     print(path.resolve())
