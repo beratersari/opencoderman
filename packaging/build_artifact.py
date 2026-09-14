@@ -54,6 +54,20 @@ def read_opencode_version(root: Path) -> str:
     return version
 
 
+def write_zip(folder: Path, dest_zip: Path) -> Path:
+    folder = Path(folder).resolve()
+    dest_zip = Path(dest_zip)
+    dest_zip.parent.mkdir(parents=True, exist_ok=True)
+    if dest_zip.exists():
+        dest_zip.unlink()
+    root = folder.parent
+    with zipfile.ZipFile(dest_zip, "w", zipfile.ZIP_DEFLATED) as zf:
+        for path in folder.rglob("*"):
+            if path.is_file():
+                zf.write(path, path.relative_to(root).as_posix())
+    return dest_zip
+
+
 def artifact_name(version: str, os_tag: str) -> str:
     safe = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in version)
     tag = os_tag.strip().lower()
@@ -252,6 +266,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Do not download or copy the OpenCode CLI.",
     )
+    parser.add_argument(
+        "--zip",
+        action="store_true",
+        help="Also write dist/opencoderman-<version>-<os>.zip of the staged folder.",
+    )
     args = parser.parse_args(argv)
     root = Path(args.root)
     host_os, host_arch = host_platform()
@@ -275,6 +294,10 @@ def main(argv: list[str] | None = None) -> int:
         attached = attach_cli(root, dest, os_tag, arch, fetch=True)
         if attached is None:
             raise SystemExit("failed to attach OpenCode CLI")
+    if args.zip:
+        zipped = write_zip(path, path.with_suffix(".zip"))
+        print(zipped.resolve())
+        return 0
     print(path.resolve())
     return 0
 

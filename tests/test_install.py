@@ -185,7 +185,10 @@ class ReplaceInstall(unittest.TestCase):
         self.assertEqual(missing, [], f"derman-build missing skill allows: {missing}")
 
     def test_reviewer_allows_non_implementer_skills(self) -> None:
-        text = (ROOT / "agents" / "gitlab-reviewer.md").read_text(encoding="utf-8")
+        path = ROOT / "agents" / "gitlab-reviewer.md"
+        if not path.is_file():
+            self.skipTest("gitlab-reviewer.md is an install-time alias of code-reviewer")
+        text = path.read_text(encoding="utf-8")
         skip = {"tdd", "debugging", "git-commits", "planning"}
         skills = [p.name for p in install.list_skill_dirs(ROOT)]
         missing = [
@@ -219,15 +222,15 @@ class ReplaceInstall(unittest.TestCase):
         self.assertEqual(kept, [str(tmp / "keep-me")])
         self.assertNotIn(install.PATH_BEGIN, profile.read_text(encoding="utf-8"))
 
+        leftover = tmp / ".opencode_backup_old"
+        leftover.mkdir()
+        (leftover / "stale.bin").write_text("x", encoding="utf-8")
         install.purge_homes(tmp)
         self.assertFalse(oc.exists())
         self.assertFalse(cfg.exists())
-        backups = list(tmp.glob(".opencode_backup_*"))
-        self.assertEqual(len(backups), 1)
-        self.assertTrue((backups[0] / "bin" / "old.exe").is_file())
-        cfg_backups = list((tmp / ".config").glob("opencode_backup_*"))
-        self.assertEqual(len(cfg_backups), 1)
-        self.assertTrue((cfg_backups[0] / "agents" / "stale.md").is_file())
+        self.assertFalse(leftover.exists())
+        self.assertEqual(list(tmp.glob(".opencode_backup_*")), [])
+        self.assertEqual(list((tmp / ".config").glob("opencode_backup_*")), [])
 
     def test_install_replaces_old_tree(self) -> None:
         import tempfile
@@ -249,28 +252,27 @@ class ReplaceInstall(unittest.TestCase):
         self.assertTrue(dest.is_file())
         self.assertEqual(dest, tmp / ".opencode" / "agents" / "code-reviewer.md")
         self.assertFalse(old.exists())
-        backups = list(tmp.glob(".opencode_backup_*"))
-        self.assertEqual(len(backups), 1)
-        self.assertTrue((backups[0] / "keep-old.txt").is_file())
+        self.assertEqual(list(tmp.glob(".opencode_backup_*")), [])
         self.assertIn("mode: primary", dest.read_text(encoding="utf-8"))
         self.assertTrue((tmp / ".opencode" / "skills" / "cpp98" / "SKILL.md").is_file())
         self.assertTrue((tmp / ".opencode" / "opencode.json").is_file())
         self.assertFalse((tmp / ".config" / "opencode").exists())
-        cfg_backups = list((tmp / ".config").glob("opencode_backup_*"))
-        self.assertEqual(len(cfg_backups), 1)
-        self.assertTrue((cfg_backups[0] / "agents" / "stale.md").is_file())
+        self.assertEqual(list((tmp / ".config").glob("opencode_backup_*")), [])
         path = install.split_path((tmp / ".opencode-path").read_text(encoding="utf-8"))
         self.assertTrue(path)
         self.assertTrue(install.is_opencode_bin_entry(path[0]))
         self.assertEqual(len([p for p in path if install.is_opencode_bin_entry(p)]), 1)
 
-    def test_backup_destination_uses_timestamp(self) -> None:
-        from datetime import datetime
+    def test_delete_home_refuses_unexpected_path(self) -> None:
+        import tempfile
+        import shutil
 
-        dest = install.backup_destination(
-            Path("/tmp/.opencode"), when=datetime(2026, 9, 4, 15, 30, 45)
-        )
-        self.assertEqual(dest.name, ".opencode_backup_20260904_153045")
+        tmp = Path(tempfile.mkdtemp(prefix="ocfg-refuse-"))
+        self.addCleanup(lambda: shutil.rmtree(tmp, ignore_errors=True))
+        surprise = tmp / "not-opencode"
+        surprise.mkdir()
+        with self.assertRaises(RuntimeError):
+            install.delete_home(surprise)
 
     def test_install_picks_up_new_agent_file(self) -> None:
         import tempfile
@@ -380,8 +382,7 @@ class ReplaceInstall(unittest.TestCase):
         dest = home / ".opencode" / "bin" / install.binary_name()
         self.assertTrue(dest.is_file())
         self.assertEqual(dest.read_bytes(), b"OLD-BINARY")
-        backups = list(home.glob(".opencode_backup_*"))
-        self.assertEqual(len(backups), 1)
+        self.assertEqual(list(home.glob(".opencode_backup_*")), [])
 
     def test_install_without_vendor_is_agents_skills_only(self) -> None:
         import tempfile

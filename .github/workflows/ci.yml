@@ -46,11 +46,9 @@ jobs:
           python install.py --root "$PWD" --user-home "$CI_HOME"
           test ! -f "$CI_HOME/.opencode/old.txt"
           test ! -e "$CI_HOME/.config/opencode"
+          test -z "$(ls -d "$CI_HOME"/.opencode_backup_* 2>/dev/null || true)"
+          test -z "$(ls -d "$CI_HOME/.config"/opencode_backup_* 2>/dev/null || true)"
           test -f "${CUSTOM}/opencode"
-          backup=$(ls -d "$CI_HOME"/.opencode_backup_* | head -1)
-          test -f "$backup/old.txt"
-          cfg_backup=$(ls -d "$CI_HOME/.config"/opencode_backup_* | head -1)
-          test -f "$cfg_backup/agents/stale.md"
           test -f "$CI_HOME/.opencode/agents/code-reviewer.md"
           test -f "$CI_HOME/.opencode/skills/cpp98/SKILL.md"
           python - <<PY
@@ -126,13 +124,9 @@ jobs:
           python install.py --root $PWD --user-home $ciHome
           if (-not (Test-Path (Join-Path $custom "opencode.exe"))) { throw "custom install should stay on disk" }
           if (Test-Path (Join-Path $ciHome ".opencode\old.txt")) { throw "old tree still present" }
-          $backup = Get-ChildItem -Path $ciHome -Directory -Filter ".opencode_backup_*" | Select-Object -First 1
-          if (-not $backup) { throw "expected .opencode_backup_*" }
-          if (-not (Test-Path (Join-Path $backup.FullName "old.txt"))) { throw "backup missing old.txt" }
+          if (Get-ChildItem -Path $ciHome -Directory -Filter ".opencode_backup_*" -ErrorAction SilentlyContinue) { throw "old backup should be deleted" }
           if (Test-Path (Join-Path $ciHome ".config\opencode")) { throw "must not rewrite ~/.config/opencode" }
-          $cfgBackup = Get-ChildItem -Path (Join-Path $ciHome ".config") -Directory -Filter "opencode_backup_*" | Select-Object -First 1
-          if (-not $cfgBackup) { throw "expected .config/opencode_backup_*" }
-          if (-not (Test-Path (Join-Path $cfgBackup.FullName "agents\stale.md"))) { throw "config backup missing stale.md" }
+          if (Get-ChildItem -Path (Join-Path $ciHome ".config") -Directory -Filter "opencode_backup_*" -ErrorAction SilentlyContinue) { throw "config backup should be deleted" }
           if (-not (Test-Path (Join-Path $ciHome ".opencode\agents\code-reviewer.md"))) { throw "code-reviewer agent missing" }
           if (-not (Test-Path (Join-Path $ciHome ".opencode\skills\cpp98\SKILL.md"))) { throw "cpp98 skill missing" }
           python -c @"

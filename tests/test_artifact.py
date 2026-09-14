@@ -62,6 +62,29 @@ class Artifact(unittest.TestCase):
         self.assertNotIn("opencoderman-*-linux.zip", workflow)
         self.assertNotIn("opencoderman-*-windows.zip", workflow)
 
+    def test_write_zip_wraps_the_folder(self) -> None:
+        import zipfile
+
+        dest = Path(tempfile.mkdtemp(prefix="ocfg-zip-")) / "opencoderman-1.18.10-linux"
+        dest.mkdir(parents=True)
+        (dest / "install.py").write_text("x", encoding="utf-8")
+        (dest / "vendor" / "bin" / "linux").mkdir(parents=True)
+        (dest / "vendor" / "bin" / "linux" / "opencode").write_bytes(b"CLI")
+        zipped = _load_builder().write_zip(dest, dest.with_suffix(".zip"))
+        self.assertTrue(zipped.is_file())
+        with zipfile.ZipFile(zipped) as zf:
+            names = set(zf.namelist())
+        self.assertIn("opencoderman-1.18.10-linux/install.py", names)
+        self.assertIn("opencoderman-1.18.10-linux/vendor/bin/linux/opencode", names)
+
+    def test_release_workflow_publishes_windows_and_linux_zips(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+        self.assertIn("build_artifact.py --os linux --zip", workflow)
+        self.assertIn("build_artifact.py --os windows --zip", workflow)
+        self.assertIn("opencoderman-*-linux.zip", workflow)
+        self.assertIn("opencoderman-*-windows.zip", workflow)
+        self.assertIn("softprops/action-gh-release", workflow)
+
     def test_opencode_download_url(self) -> None:
         mod = _load_builder()
         ver = {

@@ -1,0 +1,108 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to publish (v1.18.10)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Build offline Linux zip
+        run: |
+          set -euo pipefail
+          zip=$(python packaging/build_artifact.py --os linux --zip --out-dir dist | tail -n 1)
+          test -f "$zip"
+          python - <<PY
+          import zipfile, sys
+          from pathlib import Path
+          z = Path(r"$zip")
+          with zipfile.ZipFile(z) as zf:
+              names = zf.namelist()
+          assert any(n.endswith("vendor/bin/linux/opencode") for n in names), names
+          assert any(n.endswith("install.py") for n in names), names
+          print("ok", z.name, len(names), "files")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-zip
+          path: dist/opencoderman-*-linux.zip
+          if-no-files-found: error
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Build offline Windows zip
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $zip = (python packaging/build_artifact.py --os windows --zip --out-dir dist | Select-Object -Last 1).Trim()
+          if (-not (Test-Path $zip)) { throw "missing $zip" }
+          python -c @"
+          import zipfile
+          from pathlib import Path
+          z = Path(r'$zip')
+          with zipfile.ZipFile(z) as zf:
+              names = zf.namelist()
+          assert any(n.endswith('vendor/bin/windows/opencode.exe') for n in names), names
+          assert any(n.endswith('install.py') for n in names), names
+          print('ok', z.name, len(names), 'files')
+          "@
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-zip
+          path: dist/opencoderman-*-windows.zip
+          if-no-files-found: error
+
+  publish:
+    needs: [linux, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Assert zips
+        run: |
+          set -euo pipefail
+          test -f dist/opencoderman-1.18.10-linux.zip
+          test -f dist/opencoderman-1.18.10-windows.zip
+          test "$(ls -1 dist/*.zip | wc -l)" = "2"
+      - name: Write notes
+        run: |
+          cat > release-notes.md <<'EOF'
+          Offline OpenCoderman + OpenCode 1.18.10. Unpack, then run `install.bat` or `./install.sh`. That deletes `~/.opencode` and leftover `~/.config/opencode`, then writes a new `~/.opencode` (agents, skills, CLI). No network on the target box.
+
+          - `opencoderman-1.18.10-windows.zip`
+          - `opencoderman-1.18.10-linux.zip`
+          EOF
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          name: OpenCoderman (OpenCode 1.18.10)
+          body_path: release-notes.md
+          files: |
+            dist/opencoderman-*-windows.zip
+            dist/opencoderman-*-linux.zip
+          fail_on_unmatched_files: true
+          make_latest: true
+          generate_release_notes: false

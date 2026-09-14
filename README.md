@@ -67,12 +67,10 @@ Add a new agent by dropping `agents/<name>.md`. Add a skill as
 
 ## Replace install (this repo)
 
-`install.py` **renames** `~/.opencode` to
-`~/.opencode_backup_YYYYMMDD_HHMMSS`. A leftover `~/.config/opencode`
-is renamed to `~/.config/opencode_backup_YYYYMMDD_HHMMSS` so OpenCode
-does not load a second tree. The installer does **not** write anything
-under `~/.config/opencode`. It does not delete those backup trees. If
-another OpenCode exists (another folder on PATH, or `OPENCODE_HOME` /
+`install.py` **deletes** `~/.opencode`, leftover `~/.config/opencode`,
+and old `~/.opencode_backup_*` trees, then writes a new `~/.opencode`.
+The installer does **not** write anything under `~/.config/opencode`.
+If another OpenCode exists (another folder on PATH, or `OPENCODE_HOME` /
 `OPENCODE_INSTALL` / `OPENCODE_BIN`), those files stay where they are.
 That directory is removed from the user PATH so `opencode` does not
 resolve there. Put the old path back if you still want that copy.
@@ -84,7 +82,7 @@ missing, it reuses the binary from the newest backup. A git checkout
 without `vendor/` is agents/skills only.
 
 ```bash
-# Offline: unpack the GitHub Actions artifact, then:
+# Offline: unpack the GitHub Release zip, then:
 install.bat
 ./install.sh
 
@@ -99,15 +97,18 @@ block in `~/.profile`. Other products (for example Creasy) can call
 the same `install.py`, then copy their own `vendor/bin` if they have
 one.
 
-## CI artifacts
+## GitHub Release
 
-Push to `main` uploads folders named
-`opencoderman-1.18.10-windows` and
-`opencoderman-1.18.10-linux` (`OPENCODE_VERSION` in
-`packaging/versions.env`). GitHub wraps each folder as a zip; the
-download is not a zip of a zip. Each artifact has `agents/`,
-`skills/`, the install scripts, and `vendor/bin/<os>/` with the
-OpenCode CLI. Target install does not need network.
+A tag `v1.18.10` publishes two operator zips (OpenCode 1.18.10,
+offline):
+
+- `opencoderman-1.18.10-windows.zip`
+- `opencoderman-1.18.10-linux.zip`
+
+Each zip has `agents/`, `skills/`, the install scripts, and
+`vendor/bin/<os>/` with the OpenCode CLI. Target install does not
+need network. Push to `main` still uploads the same folders as
+Actions artifacts (`OPENCODE_VERSION` in `packaging/versions.env`).
 
 On a machine with network you can vendor into a checkout:
 

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Replace-install OpenCoderman into the user OpenCode home.
 
-Renames ~/.opencode to ~/.opencode_backup_YYYYMMDD_HHMMSS. A leftover
-~/.config/opencode is also renamed (so OpenCode does not load a second
-tree) but nothing is written back there. Any other OpenCode copy is
-left in place; its directory is dropped from PATH so `opencode` does
-not resolve there.
+Deletes ~/.opencode and leftover ~/.config/opencode (plus old
+~/.opencode_backup_* trees). Nothing is written back under
+~/.config/opencode. Any other OpenCode copy stays on disk; its
+directory is dropped from PATH so `opencode` does not resolve there.
 
 If vendor/bin has a CLI (CI artifact or vendor.sh), copy it to
 ~/.opencode/bin. If vendor is missing, reuse the binary from the
-newest ~/.opencode_backup_*. Agents/skills-only checkouts skip the CLI.
+existing ~/.opencode (copied aside before delete). Agents/skills-only
+checkouts skip the CLI.
 """
 
 from __future__ import annotations
@@ -19,8 +19,8 @@ import os
 import platform
 import shutil
 import sys
+import tempfile
 import time
-from datetime import datetime
 from pathlib import Path
 
 STOCK_CONFIG = """{
@@ -331,38 +331,69 @@ def list_skill_dirs(root: Path) -> list[Path]:
     return dirs
 
 
-def backup_destination(path: Path, when: datetime | None = None) -> Path:
-    stamp = (when or datetime.now()).strftime("%Y%m%d_%H%M%S")
-    dest = path.with_name(f"{path.name}_backup_{stamp}")
-    extra = 2
-    while dest.exists():
-        dest = path.with_name(f"{path.name}_backup_{stamp}_{extra}")
-        extra += 1
-    return dest
-
-
-def backup_home(path: Path) -> Path | None:
-    """Move a default OpenCode home aside. Does not delete it."""
-    if not path.exists():
-        return None
-    resolved = path.resolve()
-    if resolved.name.lower() not in DEDICATED_DIR_NAMES:
-        raise RuntimeError(f"refusing to move unexpected path {resolved}")
-    if is_protected_dir(resolved):
-        raise RuntimeError(f"refusing to move protected path {resolved}")
-    dest = backup_destination(path)
+def _rmtree(path: Path) -> None:
     last: OSError | None = None
     for _ in range(8):
         try:
-            shutil.move(str(path), str(dest))
-            print(f"[OK] Moved {path} -> {dest}")
-            return dest
+            shutil.rmtree(path)
+            return
+        except FileNotFoundError:
+            return
         except OSError as exc:
             last = exc
             time.sleep(0.05)
     if last is not None:
         raise last
-    return dest
+
+
+def delete_home(path: Path) -> bool:
+    """Delete a default OpenCode home. Does not leave a backup."""
+    if not path.exists():
+        return False
+    resolved = path.resolve()
+    if resolved.name.lower() not in DEDICATED_DIR_NAMES:
+        raise RuntimeError(f"refusing to delete unexpected path {resolved}")
+    if is_protected_dir(resolved):
+        raise RuntimeError(f"refusing to delete protected path {resolved}")
+    _rmtree(resolved)
+    print(f"[OK] Deleted {path}")
+    return True
+
+
+def delete_old_backups(user_home: Path | None = None) -> list[Path]:
+    base = home(user_home)
+    removed: list[Path] = []
+    for path in list(base.glob(".opencode_backup_*")):
+        if path.is_dir():
+            _rmtree(path)
+            removed.append(path)
+            print(f"[OK] Deleted leftover backup {path}")
+    cfg = base / ".config"
+    if cfg.is_dir():
+        for path in list(cfg.glob("opencode_backup_*")):
+            if path.is_dir():
+                _rmtree(path)
+                removed.append(path)
+                print(f"[OK] Deleted leftover backup {path}")
+    return removed
+
+
+def snapshot_existing_cli(user_home: Path | None = None) -> Path | None:
+    """Copy the live ~/.opencode CLI aside so purge can delete the tree."""
+    name = binary_name()
+    live = bin_dir(user_home) / name
+    if live.is_file():
+        dest = Path(tempfile.mkdtemp(prefix="ocfg-cli-")) / name
+        shutil.copy2(live, dest)
+        return dest
+    backups = sorted(home(user_home).glob(".opencode_backup_*"), reverse=True)
+    for backup in backups:
+        candidate = backup / "bin" / name
+        if candidate.is_file():
+            dest = Path(tempfile.mkdtemp(prefix="ocfg-cli-")) / name
+            shutil.copy2(candidate, dest)
+            return dest
+    return None
 
 
 def purge_discovered(
@@ -370,7 +401,7 @@ def purge_discovered(
     user_home: Path | None = None,
     path_parts: list[str] | None = None,
 ) -> tuple[list[Path], list[str]]:
-    """Move ~/.opencode and leftover ~/.config/opencode to backups.
+    """Delete ~/.opencode, leftover ~/.config/opencode, and old backups.
 
     Nothing is written back under ~/.config/opencode. Any other OpenCode
     binary stays on disk. Its directory is returned so PATH can drop it;
@@ -398,11 +429,11 @@ def purge_discovered(
     removed: list[Path] = []
     for path in (opencode_home(user_home), config_home(user_home)):
         if path.exists():
-            backed = backup_home(path)
-            if backed is not None:
-                removed.append(backed)
+            if delete_home(path):
+                removed.append(path)
         else:
             print(f"[OK] Already absent {path}")
+    removed.extend(delete_old_backups(user_home))
     return removed, drop_dirs
 
 
@@ -569,25 +600,15 @@ def vendor_binary(root: Path) -> Path | None:
     return None
 
 
-def latest_backup_binary(user_home: Path | None = None) -> Path | None:
-    base = home(user_home)
-    name = binary_name()
-    backups = sorted(base.glob(".opencode_backup_*"), reverse=True)
-    for backup in backups:
-        candidate = backup / "bin" / name
-        if candidate.is_file():
-            return candidate
-    return None
-
-
 def install_cli_binary(
     root: Path,
     *,
     user_home: Path | None = None,
     required: bool | None = None,
+    saved_cli: Path | None = None,
 ) -> Path | None:
     dest = bin_dir(user_home) / binary_name()
-    src = vendor_binary(root) or latest_backup_binary(user_home)
+    src = vendor_binary(root) or saved_cli
     vendor_dir = Path(root) / "vendor" / "bin"
     if required is None:
         required = vendor_dir.is_dir()
@@ -620,11 +641,14 @@ def install(
     print("Purging previous OpenCode install (folders + PATH)…")
     parts, handle = read_user_path(user_home=user_home)
     close_path_handle(handle, user_home=user_home)
+    saved_cli = None if vendor_binary(root) else snapshot_existing_cli(user_home=user_home)
     _removed, drop_dirs = purge_discovered(user_home=user_home, path_parts=parts)
     remove_from_path(user_home=user_home, extra_drop=drop_dirs)
     print("Installing OpenCoderman…")
     write_files(root, user_home=user_home)
-    install_cli_binary(root, user_home=user_home, required=require_binary)
+    install_cli_binary(
+        root, user_home=user_home, required=require_binary, saved_cli=saved_cli
+    )
     prepend_to_path(user_home=user_home)
     dest = opencode_home(user_home) / "agents" / "code-reviewer.md"
     if not dest.is_file():
@@ -638,7 +662,7 @@ def install(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Backup ~/.opencode, unhook other installs from PATH, then install OpenCoderman (CLI if vendored)."
+        description="Delete ~/.opencode, unhook other installs from PATH, then install OpenCoderman (CLI if vendored)."
     )
     parser.add_argument(
         "--root",
@@ -649,7 +673,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--require-binary",
         action="store_true",
-        help="Fail if vendor/bin and the backup home have no OpenCode CLI",
+        help="Fail if vendor/bin and the previous ~/.opencode have no OpenCode CLI",
     )
     args = parser.parse_args(argv)
     user_home = Path(args.user_home).expanduser() if str(args.user_home).strip() else None
