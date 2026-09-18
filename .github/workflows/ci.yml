@@ -49,7 +49,7 @@ jobs:
           test -z "$(ls -d "$CI_HOME"/.opencode_backup_* 2>/dev/null || true)"
           test -z "$(ls -d "$CI_HOME/.config"/opencode_backup_* 2>/dev/null || true)"
           test -f "${CUSTOM}/opencode"
-          test -f "$CI_HOME/.opencode/agents/code-reviewer.md"
+          test -f "$CI_HOME/.opencode/agents/derman-reviewer.md"
           test -f "$CI_HOME/.opencode/skills/cpp98/SKILL.md"
           python - <<PY
           import install
@@ -73,7 +73,7 @@ jobs:
           ART_HOME="${RUNNER_TEMP}/oc-from-art"
           python "$dest/install.py" --root "$dest" --user-home "$ART_HOME" --require-binary
           test -x "$ART_HOME/.opencode/bin/opencode"
-          test -f "$ART_HOME/.opencode/agents/code-reviewer.md"
+          test -f "$ART_HOME/.opencode/agents/derman-reviewer.md"
           test ! -e "$ART_HOME/.config/opencode"
           echo "name=$(basename "$dest")" >> "$GITHUB_OUTPUT"
           echo "dir=$dest" >> "$GITHUB_OUTPUT"
@@ -127,7 +127,7 @@ jobs:
           if (Get-ChildItem -Path $ciHome -Directory -Filter ".opencode_backup_*" -ErrorAction SilentlyContinue) { throw "old backup should be deleted" }
           if (Test-Path (Join-Path $ciHome ".config\opencode")) { throw "must not rewrite ~/.config/opencode" }
           if (Get-ChildItem -Path (Join-Path $ciHome ".config") -Directory -Filter "opencode_backup_*" -ErrorAction SilentlyContinue) { throw "config backup should be deleted" }
-          if (-not (Test-Path (Join-Path $ciHome ".opencode\agents\code-reviewer.md"))) { throw "code-reviewer agent missing" }
+          if (-not (Test-Path (Join-Path $ciHome ".opencode\agents\derman-reviewer.md"))) { throw "derman-reviewer agent missing" }
           if (-not (Test-Path (Join-Path $ciHome ".opencode\skills\cpp98\SKILL.md"))) { throw "cpp98 skill missing" }
           python -c @"
           import install
@@ -152,7 +152,7 @@ jobs:
           $artHome = Join-Path $env:RUNNER_TEMP "oc-from-art"
           python (Join-Path $dest "install.py") --root $dest --user-home $artHome --require-binary
           if (-not (Test-Path (Join-Path $artHome ".opencode\bin\opencode.exe"))) { throw "CLI missing after artifact install" }
-          if (-not (Test-Path (Join-Path $artHome ".opencode\agents\code-reviewer.md"))) { throw "agent missing after artifact install" }
+          if (-not (Test-Path (Join-Path $artHome ".opencode\agents\derman-reviewer.md"))) { throw "agent missing after artifact install" }
           if (Test-Path (Join-Path $artHome ".config\opencode")) { throw "artifact install must not write ~/.config/opencode" }
           $name = Split-Path -Leaf $dest
           Add-Content -Path $env:GITHUB_OUTPUT -Value "name=$name"

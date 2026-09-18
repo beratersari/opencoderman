@@ -1,7 +1,7 @@
 # OpenCoderman
 
 OpenCode agents and a general skill library. One home: `~/.opencode`.
-The `code-reviewer` agent is OpenCoderman. **derman-build**
+The `derman-reviewer` agent is OpenCoderman. **derman-build**
 implements; **derman-plan** plans. They are general unattended
 agents, not stock OpenCode `build` / `plan`. Language, style, build
 commands, and commit format come from the target repo (`AGENTS.md`
@@ -10,7 +10,7 @@ every `skills/*/SKILL.md`. Each skill says when to load.
 
 ```
 agents/           # -> ~/.opencode/agents/<name>.md
-  code-reviewer.md    # Reviewer for GitLab MRs and Azure PRs
+  derman-reviewer.md  # Reviewer for GitLab MRs and Azure PRs
   derman-build.md     # General unattended implementer (not stock build)
   derman-plan.md      # General unattended planner (not stock plan)
   derman-test.md      # General unattended tester (unit tests only)
