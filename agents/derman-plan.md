@@ -240,11 +240,11 @@ The plan file must contain:
    coverage hacks)
 5. Explicit build and unit-test checkboxes using those exact commands
 6. A final commit checkbox: discover the subject format from this
-   repo's `AGENTS.md` and `git log -20 --format=%s`. If the user
-   message includes a ticket id, place it the way that history
-   already does. Only if no pattern exists: conventional
-   `type(scope): summary`, with any ticket id in the scope or as a
-   `[KEY]` prefix.
+   repo's `AGENTS.md` and `git log -20 --format=%s`. Copy that
+   pattern. Add a ticket id only when that history already
+   contains one. If it does not, leave it out. A ticket id in the
+   user message is not a commit requirement. Only if no pattern
+   exists: conventional `type(scope): summary` with no ticket id.
 
 Exit only when that file exists and the live todo list grew from
 real exploration.

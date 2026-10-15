@@ -213,11 +213,12 @@ Commit messages — match **this repo**:
 1. Read `AGENTS.md` (and `CONTRIBUTING.md`, commitlint, or
    `commitMsgFormat.md` if present).
 2. Read `git log -20 --format=%s` (skip merge noise). Copy the
-   dominant pattern.
-3. If the user message includes a ticket id, place it where **this
-   repo** already puts ticket ids (prefix, scope, or trailer).
+   dominant subject pattern.
+3. Add a ticket id only when those subjects already contain one,
+   in the same place (prefix, scope, or trailer). If they do not,
+   leave it out. A ticket id in the user message is context, not
+   a commit requirement.
 4. If docs and history have no clear pattern, use conventional
    `type(scope): summary` (feat, fix, refactor, docs, test, perf,
-   ci, build, revert, chore) and include any ticket id from the user
-   message in the scope or as a `[KEY]` prefix.
+   ci, build, revert, chore) with no ticket id.
 5. Load the `git-commits` skill when writing the commit.

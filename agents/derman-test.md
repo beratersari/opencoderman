@@ -270,6 +270,11 @@ Workflow:
 
 Commit messages — match **this repo**:
 
-1. Read `AGENTS.md` and `git log -20 --format=%s`.
-2. Copy the dominant test-commit pattern (`test(scope): …`).
-3. Place the ticket id where this repo already puts it.
+1. Read `AGENTS.md` and `git log -20 --format=%s` (skip merge noise).
+2. Copy the dominant subject pattern from that log. Do not switch
+   the subject to `test(scope): …` unless that is already the
+   pattern.
+3. Add a ticket id only when those subjects already contain one,
+   in the same place. If they do not, leave it out.
+4. If docs and history have no pattern, use `test: summary` with
+   no ticket id.

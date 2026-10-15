@@ -14,12 +14,15 @@ Combined from oh-my-opencode `git-master`.
 1. Read `AGENTS.md` (and `CONTRIBUTING.md` / commitlint /
    `commitMsgFormat.md` if present).
 2. Read `git log -20 --format=%s` and copy the dominant subject
-   pattern.
-3. Put the issue key where this repo already puts it (prefix,
-   scope, or trailer).
+   pattern. Skip merge commits.
+3. Add an issue key only when the subjects from step 2 already
+   contain one, in the same place (prefix, scope, or trailer).
+   If they do not, leave it out. A ticket id in the user message
+   does not belong in the subject.
 4. If docs and history have no pattern, use
-   `[ISSUE-KEY] type: description` with
+   `type: description` with
    `feat|fix|refactor|test|docs|chore|perf|ci|build|revert`.
+   Do not add an issue-key prefix.
 
 ## Rules
 
