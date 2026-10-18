@@ -234,8 +234,10 @@ Commit messages — copy **this repo's** git history.
    5 commit messages:
    `git log -5 --no-merges --format=%B`.
 2. Copy that style exactly. Do not switch the subject to
-   `test(scope): …` unless those five messages already use it.
+   `test: …` unless those five messages already use it.
 3. When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. Leave the work-branch name out unless those messages already include one, in the same place.
 4. If the docs and those five messages have no pattern, use
-   `test: summary` and still leave the ticket id out.
+   conventional `type(scope): summary` (feat, fix, refactor, docs,
+   test, perf, ci, build, revert, chore) and still leave the ticket
+   id out.
 5. Invoke the Skill tool for `git-commits` when writing the commit.

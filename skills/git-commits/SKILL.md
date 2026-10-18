@@ -19,9 +19,9 @@ Combined from oh-my-opencode `git-master`.
    body, and wording those five messages use.
 4. When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. Leave the work-branch name out unless those messages already include one, in the same place.
 5. If the docs and those five messages have no pattern, use
-   `type: description` with
-   `feat|fix|refactor|test|docs|chore|perf|ci|build|revert`.
-   Still leave the ticket id out.
+   conventional `type(scope): summary` (feat, fix, refactor, docs,
+   test, perf, ci, build, revert, chore) and still leave the ticket
+   id out.
 
 ## Rules
 

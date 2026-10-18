@@ -92,8 +92,9 @@ The plan file must contain:
    related docs (`AGENTS.md`, and `CONTRIBUTING.md` or commitlint
    when present) and the last 5 commit messages
    (`git log -5 --no-merges --format=%B`). Use that style exactly.
-   When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. Only if the docs and those five
-   messages have no pattern: conventional `type(scope): summary`,
+   When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. If the docs and those five
+   messages have no pattern, use conventional `type(scope): summary`
+   (feat, fix, refactor, docs, test, perf, ci, build, revert, chore)
    and still leave the ticket id out.
 
 Exit only when that file exists and the live todo list grew from
