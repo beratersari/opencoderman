@@ -9,20 +9,19 @@ compatibility: opencode
 
 Combined from oh-my-opencode `git-master`.
 
-**Discover the format first.** Do not assume a house style.
+**Copy this repo's git history.**
 
-1. Read `AGENTS.md` (and `CONTRIBUTING.md` / commitlint /
-   `commitMsgFormat.md` if present).
-2. Read `git log -20 --format=%s` and copy the dominant subject
-   pattern. Skip merge commits.
-3. Add an issue key only when the subjects from step 2 already
-   contain one, in the same place (prefix, scope, or trailer).
-   If they do not, leave it out. A ticket id in the user message
-   does not belong in the subject.
-4. If docs and history have no pattern, use
+1. Read the related docs that describe commit messages: `AGENTS.md`,
+   and `CONTRIBUTING.md` or commitlint when they exist.
+2. Read the last 5 commit messages, skipping merges:
+   `git log -5 --no-merges --format=%B`.
+3. Copy that style exactly: the same prefix, punctuation, scope,
+   body, and wording those five messages use.
+4. When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. Leave the work-branch name out unless those messages already include one, in the same place.
+5. If the docs and those five messages have no pattern, use
    `type: description` with
    `feat|fix|refactor|test|docs|chore|perf|ci|build|revert`.
-   Do not add an issue-key prefix.
+   Still leave the ticket id out.
 
 ## Rules
 

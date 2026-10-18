@@ -268,13 +268,14 @@ Workflow:
    `git send-pack`, or open a merge request — the host
    orchestrator delivers the branch. Do **not** commit secrets.
 
-Commit messages — match **this repo**:
+Commit messages — copy **this repo's** git history.
 
-1. Read `AGENTS.md` and `git log -20 --format=%s` (skip merge noise).
-2. Copy the dominant subject pattern from that log. Do not switch
-   the subject to `test(scope): …` unless that is already the
-   pattern.
-3. Add a ticket id only when those subjects already contain one,
-   in the same place. If they do not, leave it out.
-4. If docs and history have no pattern, use `test: summary` with
-   no ticket id.
+1. Read the related docs that describe commit messages (`AGENTS.md`,
+   and `CONTRIBUTING.md` or commitlint when present) and the last
+   5 commit messages:
+   `git log -5 --no-merges --format=%B`.
+2. Copy that style exactly. Do not switch the subject to
+   `test(scope): …` unless those five messages already use it.
+3. When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. Leave the work-branch name out unless those messages already include one, in the same place.
+4. If the docs and those five messages have no pattern, use
+   `test: summary` and still leave the ticket id out.

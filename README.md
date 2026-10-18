@@ -4,8 +4,9 @@ OpenCode agents and a general skill library. One home: `~/.opencode`.
 The `derman-reviewer` agent is OpenCoderman. **derman-build**
 implements; **derman-plan** plans. They are general unattended
 agents, not stock OpenCode `build` / `plan`. Language, style, build
-commands, and commit format come from the target repo (`AGENTS.md`
-and `git log`). They load the same `skills/` tree. Installers copy
+commands, and commit format come from the target repo (the docs
+that describe commit messages, and the last 5 commit messages).
+They load the same `skills/` tree. Installers copy
 every `skills/*/SKILL.md`. Each skill says when to load.
 
 ```

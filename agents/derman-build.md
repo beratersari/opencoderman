@@ -208,17 +208,17 @@ Workflow:
    `git send-pack`, or open a merge request — the host orchestrator
    delivers the branch. Do **not** commit secrets.
 
-Commit messages — match **this repo**:
+Commit messages — copy **this repo's** git history.
 
-1. Read `AGENTS.md` (and `CONTRIBUTING.md`, commitlint, or
-   `commitMsgFormat.md` if present).
-2. Read `git log -20 --format=%s` (skip merge noise). Copy the
-   dominant subject pattern.
-3. Add a ticket id only when those subjects already contain one,
-   in the same place (prefix, scope, or trailer). If they do not,
-   leave it out. A ticket id in the user message is context, not
-   a commit requirement.
-4. If docs and history have no clear pattern, use conventional
-   `type(scope): summary` (feat, fix, refactor, docs, test, perf,
-   ci, build, revert, chore) with no ticket id.
-5. Load the `git-commits` skill when writing the commit.
+1. Read the related docs that describe commit messages: `AGENTS.md`,
+   and `CONTRIBUTING.md` or commitlint when they exist.
+2. Read the last 5 commit messages, skipping merges:
+   `git log -5 --no-merges --format=%B`.
+3. Copy that style exactly: the same prefix, punctuation, scope,
+   body, and wording those five messages use.
+4. When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. Leave the work-branch name out unless those messages already include one, in the same place.
+5. If the docs and those five messages have no pattern, use
+   conventional `type(scope): summary` (feat, fix, refactor, docs,
+   test, perf, ci, build, revert, chore) and still leave the ticket
+   id out.
+6. Load the `git-commits` skill when writing the commit.

@@ -239,12 +239,13 @@ The plan file must contain:
    `expect_call` with exact parameters; real edge cases, not
    coverage hacks)
 5. Explicit build and unit-test checkboxes using those exact commands
-6. A final commit checkbox: discover the subject format from this
-   repo's `AGENTS.md` and `git log -20 --format=%s`. Copy that
-   pattern. Add a ticket id only when that history already
-   contains one. If it does not, leave it out. A ticket id in the
-   user message is not a commit requirement. Only if no pattern
-   exists: conventional `type(scope): summary` with no ticket id.
+6. A final commit checkbox: copy this repo's commit style from the
+   related docs (`AGENTS.md`, and `CONTRIBUTING.md` or commitlint
+   when present) and the last 5 commit messages
+   (`git log -5 --no-merges --format=%B`). Use that style exactly.
+   When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. Only if the docs and those five
+   messages have no pattern: conventional `type(scope): summary`,
+   and still leave the ticket id out.
 
 Exit only when that file exists and the live todo list grew from
 real exploration.
