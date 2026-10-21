@@ -139,7 +139,13 @@ gate. A subject from a different project is a failed commit.
    leave the ticket id out in that fallback.
 6. Before `git commit`, compare your subject with those five. If a
    reader could tell it came from a different repository, rewrite it.
-7. A wrong subject on the tip is `git commit --amend` with no staged
-   files and no `--all`. Do not reset or rebase. Invoke the Skill
-   tool for `git-commits` when writing the commit. The five subjects
-   win over that skill.
+7. A wrong subject on the tip alone is `git commit --amend` with no
+   staged files and no `--all`.
+8. Do not squash the branch into one commit to fix subjects. Do not
+   `git revert` a commit whose subject is wrong. For an older commit,
+   `git commit --fixup=reword:<full-sha> -m "<subject>"` from oldest
+   to newest, then `git rebase -i --autosquash origin/<target>` with
+   `GIT_SEQUENCE_EDITOR=true`. The file tree and the commit count stay
+   the same. Do not reset `main`, `develop`, or the merge target.
+   Invoke the Skill tool for `git-commits` when writing the commit.
+   The five subjects win over that skill.

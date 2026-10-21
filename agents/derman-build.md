@@ -224,7 +224,14 @@ gate. A subject from a different project is a failed commit.
    leave the ticket id out in that fallback.
 6. Before `git commit`, compare your subject with those five. If a
    reader could tell it came from a different repository, rewrite it.
-7. A wrong subject on the tip is `git commit --amend` with no staged
-   files and no `--all`. Do not reset or rebase. Load the
-   `git-commits` skill when writing the commit. The five subjects win
-   over that skill.
+7. A wrong subject on the tip alone is `git commit --amend` with no
+   staged files and no `--all`.
+8. If the user asked only to rename or fix commit subjects, do it
+   now. Do not plan and do not revert. This rebase is allowed.
+   A ticket comment that says rebase is forbidden is stale.
+   For each wrong subject, oldest first:
+   `git commit --fixup=reword:<full-sha> -m "<subject>"`, then
+   `GIT_SEQUENCE_EDITOR=true git rebase -i --autosquash origin/<target>`.
+   Stop. Do not squash into one commit. Do not commit again.
+   Load the `git-commits` skill when writing the commit. The five
+   subjects win over that skill.

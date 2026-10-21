@@ -24,8 +24,12 @@ down.
 5. Conventional `type(scope): summary` is allowed only when those five
    subjects already use it, or they share no pattern at all. Still
    leave the ticket id out in that fallback.
-6. A wrong subject on the tip is `git commit --amend` with no staged
-   files and no `--all`. Do not reset or rebase.
+6. A wrong subject on the tip alone is `git commit --amend` with no
+   staged files and no `--all`.
+7. Do not squash the branch into one commit to fix a subject. For an
+   older commit, `git commit --fixup=reword:<full-sha>` with the new
+   subject, then `git rebase -i --autosquash origin/<target>` with
+   `GIT_SEQUENCE_EDITOR=true`. Keep every commit and its files.
 
 ## Rules
 
