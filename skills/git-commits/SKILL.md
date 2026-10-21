@@ -9,21 +9,28 @@ compatibility: opencode
 
 Combined from oh-my-opencode `git-master`.
 
-**Copy this repo's git history.**
+**Copy this repo's git history.** The five subjects below are a hard
+gate. They win over conventional commits and over the rules further
+down.
 
 1. Read the related docs that describe commit messages: `AGENTS.md`,
    and `CONTRIBUTING.md` or commitlint when they exist.
-2. Read the last 5 commit messages, skipping merges:
-   `git log -5 --no-merges --format=%B`.
-3. Copy that style exactly: the same prefix, punctuation, scope,
-   body, and wording those five messages use.
+2. Run `git log -5 --no-merges --format=%s` and read those five
+   subjects before writing the message.
+3. Use their pattern exactly: the same ticket-id position, brackets,
+   separator, and type prefix. If those subjects do not start with
+   `feat:`, `fix:`, or `chore:`, yours must not either.
 4. When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. Leave the work-branch name out unless those messages already include one, in the same place.
-5. If the docs and those five messages have no pattern, use
-   conventional `type(scope): summary` (feat, fix, refactor, docs,
-   test, perf, ci, build, revert, chore) and still leave the ticket
-   id out.
+5. Conventional `type(scope): summary` is allowed only when those five
+   subjects already use it, or they share no pattern at all. Still
+   leave the ticket id out in that fallback.
+6. A wrong subject on the tip is `git commit --amend` with no staged
+   files and no `--all`. Do not reset or rebase.
 
 ## Rules
+
+These apply only when the five subjects share no pattern, or they
+already use this shape. They never replace a different pattern.
 
 - One logical change per commit. Do not mix a behavior
   fix with an unrelated rename.

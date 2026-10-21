@@ -88,14 +88,14 @@ The plan file must contain:
    `expect_call` with exact parameters; real edge cases, not
    coverage hacks)
 5. Explicit build and unit-test checkboxes using those exact commands
-6. A final commit checkbox: copy this repo's commit style from the
-   related docs (`AGENTS.md`, and `CONTRIBUTING.md` or commitlint
-   when present) and the last 5 commit messages
-   (`git log -5 --no-merges --format=%B`). Use that style exactly.
-   When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. If the docs and those five
-   messages have no pattern, use conventional `type(scope): summary`
-   (feat, fix, refactor, docs, test, perf, ci, build, revert, chore)
-   and still leave the ticket id out.
+6. A final commit checkbox: the subject is a hard gate. Run
+   `git log -5 --no-merges --format=%s` in this clone and copy that
+   pattern (ticket-id position, brackets, separator, type prefix).
+   Do not use `feat:`, `fix:`, or `chore:` unless those five subjects
+   do. A ticket id goes where those subjects put one, or nowhere when
+   they have none. Conventional `type(scope): summary` is only the
+   fallback when those five subjects share no pattern. A wrong
+   subject is `git commit --amend` with no staged files.
 
 Exit only when that file exists and the live todo list grew from
 real exploration.

@@ -268,16 +268,19 @@ Workflow:
    `git send-pack`, or open a merge request — the host
    orchestrator delivers the branch. Do **not** commit secrets.
 
-Commit messages — copy **this repo's** git history.
+Commit messages — copy **this repo's** git history. This is a hard
+gate. A subject from a different project is a failed commit.
 
 1. Read the related docs that describe commit messages (`AGENTS.md`,
-   and `CONTRIBUTING.md` or commitlint when present) and the last
-   5 commit messages:
-   `git log -5 --no-merges --format=%B`.
-2. Copy that style exactly. Do not switch the subject to
-   `test: …` unless those five messages already use it.
-3. When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. Leave the work-branch name out unless those messages already include one, in the same place.
-4. If the docs and those five messages have no pattern, use
-   conventional `type(scope): summary` (feat, fix, refactor, docs,
-   test, perf, ci, build, revert, chore) and still leave the ticket
-   id out.
+   and `CONTRIBUTING.md` or commitlint when present).
+2. Run `git log -5 --no-merges --format=%s` and read those five
+   subjects before writing the message.
+3. Use their pattern exactly. Do not switch the subject to
+   `test: …`, `feat:`, `fix:`, or `chore:` unless those five
+   subjects already use that prefix.
+4. When those five messages include a ticket id, put this job's ticket in that same place (prefix, scope, or trailer). When they do not, leave the ticket id out. Leave the work-branch name out unless those messages already include one, in the same place.
+5. Conventional `type(scope): summary` is allowed only when those five
+   subjects already use it, or they share no pattern at all. Still
+   leave the ticket id out in that fallback.
+6. A wrong subject on the tip is `git commit --amend` with no staged
+   files and no `--all`. Do not reset or rebase.
