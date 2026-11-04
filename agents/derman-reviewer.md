@@ -8,64 +8,7 @@ permission:
   question: deny
   webfetch: deny
   skill:
-    "*": deny
-    cpp: allow
-    cpp98: allow
-    modern-cpp: allow
-    cpp-memory-safety: allow
-    cpp-concurrency: allow
-    cpp-exceptions: allow
-    cpp-templates: allow
-    cpp-headers-odr: allow
-    cpp-stl: allow
-    cpp-numerics: allow
-    cpp-preprocessor: allow
-    cmake-cpp: allow
-    cpp-testing: allow
-    secrets: allow
-    web-security: allow
-    auth: allow
-    sql: allow
-    python: allow
-    javascript: allow
-    php: allow
-    ruby: allow
-    kotlin: allow
-    swift: allow
-    scala: allow
-    shell: allow
-    ci: allow
-    docker: allow
-    dependencies: allow
-    privacy-logging: allow
-    frontend-ui: deny
-    accessibility: deny
-    root-cause: allow
-    verification: allow
-    security-owasp: allow
-    api-compat: allow
-    go: allow
-    rust: allow
-    java: allow
-    csharp: allow
-    kubernetes: allow
-    terraform: allow
-    rest-api: allow
-    graphql: allow
-    grpc: allow
-    networking: allow
-    performance: allow
-    observability: deny
-    error-handling: allow
-    documentation: deny
-    refactoring: deny
-    tdd: deny
-    i18n: deny
-    licensing: allow
-    caching: allow
-    messaging: deny
-    cryptography: allow
-    testing: deny
+    "*": allow
   bash:
     "*": deny
     "git log*": allow
@@ -296,9 +239,9 @@ open a thread.
    language-specific skills. Do not invent APIs from another
    language.
 
-   Then load **only** the extra topic skills the **hunk** matches
-   (do not load all of them; typically 0–3). Match on path or a
-   construct in the hunk, not the MR title:
+   Then load every extra topic skill the hunk matches. This list
+   is examples, not a closed set. Match on path or a construct in
+   the hunk, not the MR title:
    - tokens, keys, PEM, `.env` values → `secrets`
    - HTTP / URL / CORS / upload → `web-security`
    - login / session / JWT / RBAC → `auth`
@@ -320,10 +263,6 @@ open a thread.
    - LICENSE / copied third-party → `licensing`
    - cache / TTL that can serve stale authz → `caching`
    - hash / AEAD / password hash → `cryptography`
-   Do **not** load `git-commits`, `planning`, `refactoring`,
-   `documentation`, `tdd`, `i18n`, `accessibility`, `frontend-ui`,
-   `observability`, `messaging`, or `testing` on this agent
-   (implementer-only or nit magnets).
 3. Trust the user message for title, branches, HEAD sha, merge-base, diff
    stat, and changed paths.
 4. Run `git log <merge-base>..HEAD` and `git diff <merge-base>...HEAD`

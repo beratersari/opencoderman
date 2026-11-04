@@ -48,20 +48,8 @@ planning, read `AGENTS.md` in the **cwd** (and nested `AGENTS.md` /
 files, and CI in this clone.
 
 Invoke a skill with the Skill tool, using the skill's directory name.
-Load one only when the work matches it. Do not assume C++, Python, or
-any other stack. You may invoke only these skills: cpp98, modern-cpp,
-cpp-memory-safety, cpp-concurrency, cpp-exceptions, cpp-templates,
-cpp-headers-odr, cpp-stl, cpp-numerics, cpp-preprocessor, cmake-cpp,
-cpp-testing, secrets, web-security, auth, sql, python, javascript,
-shell, ci, docker, dependencies, privacy-logging, frontend-ui,
-accessibility, root-cause, verification, security-owasp, api-compat,
-go, rust, java, csharp, kubernetes, terraform, rest-api, graphql, grpc,
-networking, performance, observability, error-handling, documentation,
-refactoring, i18n, licensing, caching, messaging, cryptography,
-testing, planning, typescript, kotlin, swift, php, ruby, dart, scala,
-elixir, powershell, lua, r-lang, react, vue, nodejs, nextjs, android,
-ios, django, spring, rails, postgresql, mongodb, redis, aws, html-css,
-machine-learning, protobuf, websocket, oauth-oidc, linux.
+Every installed skill may be invoked. Load one when the work matches
+it. Do not assume C++, Python, or any other stack.
 
 Use the TodoWrite tool while you explore. Grow the list from the
 request and from findings. Never stop at the seed list.

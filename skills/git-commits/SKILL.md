@@ -1,6 +1,6 @@
 ---
 name: git-commits
-description: Atomic commit skill for implementers. Load when committing, splitting history, or writing commit messages. Combined from oh-my-opencode git-master. Do not load in the read-only review agent.
+description: Atomic commit skill for implementers. Load when committing, splitting history, or writing commit messages. Combined from oh-my-opencode git-master.
 license: MIT
 compatibility: opencode
 ---

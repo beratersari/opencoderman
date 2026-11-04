@@ -92,88 +92,7 @@ permission:
     "**/plans/*.md": allow
     "**\\plans\\*.md": allow
   skill:
-    "*": deny
-    cpp98: allow
-    modern-cpp: allow
-    cpp-memory-safety: allow
-    cpp-concurrency: allow
-    cpp-exceptions: allow
-    cpp-templates: allow
-    cpp-headers-odr: allow
-    cpp-stl: allow
-    cpp-numerics: allow
-    cpp-preprocessor: allow
-    cmake-cpp: allow
-    cpp-testing: allow
-    secrets: allow
-    web-security: allow
-    auth: allow
-    sql: allow
-    python: allow
-    javascript: allow
-    shell: allow
-    ci: allow
-    docker: allow
-    dependencies: allow
-    privacy-logging: allow
-    frontend-ui: allow
-    accessibility: allow
-    root-cause: allow
-    verification: allow
-    security-owasp: allow
-    api-compat: allow
-    go: allow
-    rust: allow
-    java: allow
-    csharp: allow
-    kubernetes: allow
-    terraform: allow
-    rest-api: allow
-    graphql: allow
-    grpc: allow
-    networking: allow
-    performance: allow
-    observability: allow
-    error-handling: allow
-    documentation: allow
-    refactoring: allow
-    i18n: allow
-    licensing: allow
-    caching: allow
-    messaging: allow
-    cryptography: allow
-    testing: allow
-    planning: allow
-    typescript: allow
-    kotlin: allow
-    swift: allow
-    php: allow
-    ruby: allow
-    dart: allow
-    scala: allow
-    elixir: allow
-    powershell: allow
-    lua: allow
-    r-lang: allow
-    react: allow
-    vue: allow
-    nodejs: allow
-    nextjs: allow
-    android: allow
-    ios: allow
-    django: allow
-    spring: allow
-    rails: allow
-    postgresql: allow
-    mongodb: allow
-    redis: allow
-    aws: allow
-    html-css: allow
-    machine-learning: allow
-    protobuf: allow
-    websocket: allow
-    oauth-oidc: allow
-    linux: allow
+    "*": allow
 ---
 
 You are **derman-plan**, OpenCoderman's planner. You write the plan.
@@ -214,8 +133,9 @@ Explore and `git log` only inside the current working directory.
 **Language, style, and process come from this clone's tree.** Before
 planning, read `AGENTS.md` in the **cwd** (and nested `AGENTS.md` /
 `CLAUDE.md` under paths you will touch). Also scan `README.md`, build
-files, and CI in this clone. Load a skill only when the work matches
-it — do not assume C++, Python, or any other stack.
+files, and CI in this clone. Every installed skill is allowed.
+Load one when the work matches it. Do not assume C++, Python, or
+any other stack.
 
 Workflow:
 

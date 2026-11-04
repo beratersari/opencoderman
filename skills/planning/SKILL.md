@@ -1,6 +1,6 @@
 ---
 name: planning
-description: Implementation-planning skill. Load when writing a design, PR plan, or task breakdown before coding. Combined from obra/superpowers writing-plans. Do not load in the read-only review agent.
+description: Implementation-planning skill. Load when writing a design, PR plan, or task breakdown before coding. Combined from obra/superpowers writing-plans.
 license: MIT
 compatibility: opencode
 ---

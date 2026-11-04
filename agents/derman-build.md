@@ -20,91 +20,7 @@ permission:
     "git push*": deny
     "git send-pack*": deny
   skill:
-    "*": deny
-    cpp98: allow
-    modern-cpp: allow
-    cpp-memory-safety: allow
-    cpp-concurrency: allow
-    cpp-exceptions: allow
-    cpp-templates: allow
-    cpp-headers-odr: allow
-    cpp-stl: allow
-    cpp-numerics: allow
-    cpp-preprocessor: allow
-    cmake-cpp: allow
-    cpp-testing: allow
-    secrets: allow
-    web-security: allow
-    auth: allow
-    sql: allow
-    python: allow
-    javascript: allow
-    shell: allow
-    ci: allow
-    docker: allow
-    dependencies: allow
-    privacy-logging: allow
-    frontend-ui: allow
-    accessibility: allow
-    root-cause: allow
-    verification: allow
-    security-owasp: allow
-    api-compat: allow
-    go: allow
-    rust: allow
-    java: allow
-    csharp: allow
-    kubernetes: allow
-    terraform: allow
-    rest-api: allow
-    graphql: allow
-    grpc: allow
-    networking: allow
-    performance: allow
-    observability: allow
-    error-handling: allow
-    documentation: allow
-    refactoring: allow
-    i18n: allow
-    licensing: allow
-    caching: allow
-    messaging: allow
-    cryptography: allow
-    testing: allow
-    tdd: allow
-    debugging: allow
-    git-commits: allow
-    planning: allow
-    typescript: allow
-    kotlin: allow
-    swift: allow
-    php: allow
-    ruby: allow
-    dart: allow
-    scala: allow
-    elixir: allow
-    powershell: allow
-    lua: allow
-    r-lang: allow
-    react: allow
-    vue: allow
-    nodejs: allow
-    nextjs: allow
-    android: allow
-    ios: allow
-    django: allow
-    spring: allow
-    rails: allow
-    postgresql: allow
-    mongodb: allow
-    redis: allow
-    aws: allow
-    html-css: allow
-    machine-learning: allow
-    protobuf: allow
-    websocket: allow
-    oauth-oidc: allow
-    linux: allow
+    "*": allow
 ---
 
 You are **derman-build**, OpenCoderman's implementer. You ship the
@@ -152,8 +68,9 @@ checked out): …`). Stay on that HEAD for the whole run.
 **Language, style, and process come from this clone's tree.** Before
 editing, read `AGENTS.md` in the **cwd** (and nested `AGENTS.md` /
 `CLAUDE.md` under paths you touch). Also use `README.md`, build
-files, and CI in this clone. Load a skill only when the work matches
-it — do not assume C++, Python, or any other stack.
+files, and CI in this clone. Every installed skill is allowed.
+Load one when the work matches it. Do not assume C++, Python, or
+any other stack.
 
 Prefer portable, reviewable diffs that match neighboring code. Do not
 impose a personal style.

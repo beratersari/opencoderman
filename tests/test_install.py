@@ -123,7 +123,6 @@ class ReplaceInstall(unittest.TestCase):
             '"rg *"',
         ):
             self.assertIn(getter, bash, f"missing getter allow {getter}")
-        self.assertNotIn("git-commits: allow", text)
         self.assertNotIn('"git push*"', bash)
         self.assertNotIn('"git commit*"', bash)
         self.assertNotIn('"git add*"', bash)
@@ -144,7 +143,6 @@ class ReplaceInstall(unittest.TestCase):
         restore = bash.find('"git checkout --*"')
         self.assertTrue(star != -1 and checkout_deny > star, bash)
         self.assertTrue(restore > checkout_deny, bash)
-        self.assertIn("git-commits: allow", text)
         self.assertIn("Do **not** `git push`", text)
         self.assertIn("current working directory", text)
         self.assertIn("derman-test", text)
@@ -178,18 +176,31 @@ class ReplaceInstall(unittest.TestCase):
         self.assertIn("Boundaries", tester)
         self.assertIn("When you are done", tester)
 
-    def test_derman_build_allows_every_shipped_skill(self) -> None:
-        text = (ROOT / "agents" / "derman-build.md").read_text(encoding="utf-8")
-        skills = [p.name for p in install.list_skill_dirs(ROOT)]
-        missing = [name for name in skills if f"{name}: allow" not in text]
-        self.assertEqual(missing, [], f"derman-build missing skill allows: {missing}")
+    def _skill_block(self, text: str) -> str:
+        after = text.split("skill:", 1)[1]
+        lines = []
+        for line in after.splitlines()[1:]:
+            if line.startswith("  ") and not line.startswith("    ") and line.strip():
+                break
+            lines.append(line)
+        return "\n".join(lines)
 
-    def test_reviewer_allows_non_implementer_skills(self) -> None:
-        text = (ROOT / "agents" / "derman-reviewer.md").read_text(encoding="utf-8")
-        for name in ("python", "javascript", "secrets", "web-security", "auth"):
-            self.assertIn(f"{name}: allow", text)
-        for name in ("tdd", "planning", "git-commits"):
-            self.assertNotIn(f"{name}: allow", text)
+    def test_every_agent_allows_every_skill(self) -> None:
+        for name in (
+            "derman-build.md",
+            "derman-plan.md",
+            "derman-test.md",
+            "derman-reviewer.md",
+        ):
+            text = (ROOT / "agents" / name).read_text(encoding="utf-8")
+            block = self._skill_block(text)
+            self.assertIn('"*": allow', block)
+            self.assertNotIn("deny", block, name)
+            claude = (ROOT / "claude-agents" / name).read_text(encoding="utf-8")
+            self.assertNotIn("You may invoke only these skills", claude, name)
+            self.assertIn("Every installed skill may be invoked", claude, name)
+        reviewer = (ROOT / "agents" / "derman-reviewer.md").read_text(encoding="utf-8")
+        self.assertNotIn("Do **not** load `git-commits`", reviewer)
 
     def test_purge_removes_homes_and_path(self) -> None:
         import tempfile

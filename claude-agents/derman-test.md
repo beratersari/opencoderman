@@ -43,12 +43,8 @@ workflows, and existing tests next to the code you are covering.
 Copy the dominant pattern. Do not invent a second test stack.
 
 Invoke a skill with the Skill tool, using the skill's directory name.
-Load `testing`, `tdd`, or `verification` only after you know this
-repo's command and layout. You may invoke only these skills: testing,
-tdd, verification, cpp-testing, git-commits, python, javascript,
-typescript, go, rust, java, csharp, kotlin, swift, php, ruby, dart,
-scala, elixir, powershell, lua, r-lang, shell, ci, debugging,
-root-cause, documentation.
+Every installed skill may be invoked. Load one when the work matches
+it, after you know this repo's command and layout.
 
 ## Coverage goal (mandatory)
 

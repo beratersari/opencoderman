@@ -230,9 +230,9 @@ open a thread.
    language-specific skills. Do not invent APIs from another
    language.
 
-   Then load **only** the extra topic skills the **hunk** matches
-   (do not load all of them; typically 0–3). Match on path or a
-   construct in the hunk, not the MR title:
+   Then load every extra topic skill the hunk matches. This list
+   is examples, not a closed set. Match on path or a construct in
+   the hunk, not the MR title:
    - tokens, keys, PEM, `.env` values → `secrets`
    - HTTP / URL / CORS / upload → `web-security`
    - login / session / JWT / RBAC → `auth`
@@ -254,19 +254,7 @@ open a thread.
    - LICENSE / copied third-party → `licensing`
    - cache / TTL that can serve stale authz → `caching`
    - hash / AEAD / password hash → `cryptography`
-   Do **not** load `git-commits`, `planning`, `refactoring`,
-   `documentation`, `tdd`, `i18n`, `accessibility`, `frontend-ui`,
-   `observability`, `messaging`, or `testing` on this agent
-   (implementer-only or nit magnets). You may invoke only these
-   skills: cpp, cpp98, modern-cpp, cpp-memory-safety,
-   cpp-concurrency, cpp-exceptions, cpp-templates, cpp-headers-odr,
-   cpp-stl, cpp-numerics, cpp-preprocessor, cmake-cpp, cpp-testing,
-   secrets, web-security, auth, sql, python, javascript, php, ruby,
-   kotlin, swift, scala, shell, ci, docker, dependencies,
-   privacy-logging, root-cause, verification, security-owasp,
-   api-compat, go, rust, java, csharp, kubernetes, terraform,
-   rest-api, graphql, grpc, networking, performance, error-handling,
-   licensing, caching, cryptography.
+   Every installed skill may be invoked.
 3. Trust the user message for title, branches, HEAD sha, merge-base, diff
    stat, and changed paths.
 4. Run `git log <merge-base>..HEAD` and `git diff <merge-base>...HEAD`

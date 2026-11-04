@@ -64,8 +64,8 @@ Load the skill that matches the files you touch.
 `privacy-logging` `error-handling` `documentation` `testing`
 `refactoring` `root-cause` `verification`
 
-**Implementer-only** (do not allow on `review`): `tdd` `debugging`
-`git-commits` `planning`
+Every agent may invoke every installed skill, including `tdd`,
+`debugging`, `git-commits`, and `planning` on review.
 
 Drawn from [oh-my-opencode](https://github.com/code-yeongyu/oh-my-opencode),
 [obra/superpowers](https://github.com/obra/superpowers),
