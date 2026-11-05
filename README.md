@@ -15,15 +15,17 @@ agents/           # OpenCode -> ~/.opencode/agents/<name>.md
   derman-build.md     # General unattended implementer (not stock build)
   derman-plan.md      # General unattended planner (not stock plan)
   derman-test.md      # General unattended tester (unit tests only)
+  derman-rebase.md    # Unattended rebase conflict solver (not a ticket implementer)
 claude-agents/    # Claude Code -> ~/.claude/agents/<name>.md
   derman-build.md     # Same job rules, Claude tools and Skill wording
   derman-plan.md
   derman-test.md
   derman-reviewer.md
+  derman-rebase.md
 skills/           # -> ~/.opencode/skills and ~/.claude/skills
 ```
 
-`agents/` is what OpenCode loads. `claude-agents/` is the same four
+`agents/` is what OpenCode loads. `claude-agents/` is the same five
 roles for Claude Code. Yaver Sync and `install-agents` copy each agent
 tree into that harness, and copy `skills/` into both homes.
 The instruction is the same. The header, tool names, and skill calls

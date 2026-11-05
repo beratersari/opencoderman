@@ -80,6 +80,8 @@ class ReplaceInstall(unittest.TestCase):
         self.assertIn("derman-reviewer", agents)
         self.assertIn("derman-build", agents)
         self.assertIn("derman-plan", agents)
+        self.assertIn("derman-rebase", agents)
+        self.assertIn("rebase-solver", skills)
         self.assertIn("cpp98", skills)
         self.assertIn("modern-cpp", skills)
         self.assertIn("cpp-memory-safety", skills)
@@ -191,6 +193,7 @@ class ReplaceInstall(unittest.TestCase):
             "derman-plan.md",
             "derman-test.md",
             "derman-reviewer.md",
+            "derman-rebase.md",
         ):
             text = (ROOT / "agents" / name).read_text(encoding="utf-8")
             block = self._skill_block(text)
@@ -201,6 +204,33 @@ class ReplaceInstall(unittest.TestCase):
             self.assertIn("Every installed skill may be invoked", claude, name)
         reviewer = (ROOT / "agents" / "derman-reviewer.md").read_text(encoding="utf-8")
         self.assertNotIn("Do **not** load `git-commits`", reviewer)
+
+    def test_derman_rebase_may_finish_or_abort_and_cannot_push(self) -> None:
+        text = (ROOT / "agents" / "derman-rebase.md").read_text(encoding="utf-8")
+        bash = text.split("bash:", 1)[1].split("skill:", 1)[0]
+        star = bash.find('"*"')
+        rebase = bash.find('"git rebase*"')
+        push = bash.find('"git push*"')
+        self.assertGreater(star, -1)
+        self.assertGreater(rebase, star)
+        self.assertGreater(push, star)
+        self.assertIn(": allow", bash[rebase : rebase + 40])
+        self.assertIn(": deny", bash[push : push + 40])
+        self.assertIn("git rebase --abort", text)
+        self.assertIn("Do not `git push`", text)
+        self.assertIn("rebase-solver", text)
+        claude = (ROOT / "claude-agents" / "derman-rebase.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("name: derman-rebase", claude)
+        self.assertIn("Bash", claude)
+        self.assertIn("AskUserQuestion", claude)
+        self.assertIn("git rebase --abort", claude)
+        self.assertIn("Every installed skill may be invoked", claude)
+        skill = (ROOT / "skills" / "rebase-solver" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("binary", skill.lower())
 
     def test_purge_removes_homes_and_path(self) -> None:
         import tempfile
