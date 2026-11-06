@@ -19,14 +19,9 @@ The prompt names each repository that stopped. In a multi-repo workspace, `cd` i
 2. Open each conflict. Keep both sides' intent. `<<<<<<< HEAD` is the target branch (`--ours`). The commit under `=======` is this job's work commit (`--theirs`).
 3. Delete every conflict marker (`<<<<<<<`, `=======`, `>>>>>>>`).
 4. `git add` each resolved file. Do not `git add -A` over unrelated untracked files.
-5. Continue without an editor. In PowerShell run:
+5. Continue by running the continue command named in the user message. It is a shell script on Windows and on Linux. The script sets `GIT_EDITOR` itself. An inherited value such as `cmd.exe /c exit 0` is not an editor Git can run, and `git -c core.editor=` does not override `GIT_EDITOR`.
 
-   ```powershell
-   $env:GIT_EDITOR = "true"
-   git rebase --continue
-   ```
-
-   Do not write `GIT_EDITOR=true git rebase --continue`. PowerShell does not set the variable that way, and git opens its editor. Yaver already puts Git's `true` on PATH and sets `GIT_EDITOR` for the job, so `git rebase --continue` alone also skips the editor.
+   To continue by hand, set `GIT_EDITOR` and `GIT_SEQUENCE_EDITOR` to the absolute program named in the prompt, then run `git rebase --continue`. Do not write `GIT_EDITOR=true git rebase --continue`. That is not a PowerShell assignment, and a bare `true` is not on PATH there. Do not use `$env:GIT_EDITOR` either.
 6. Repeat until `git status` shows no rebase in progress.
 7. Do not `git rebase --skip` unless the commit is empty after the resolution.
 

@@ -51,17 +51,12 @@ allowed. `git checkout --ours` and `git checkout --theirs` are
 allowed for one conflicted path.
 
 Resolve a text conflict by keeping both sides' intent, deleting
-every conflict marker, and `git add` of that file only. Continue
-without an editor. In PowerShell:
-
-```powershell
-$env:GIT_EDITOR = "true"
-git rebase --continue
-```
-
-Do not write `GIT_EDITOR=true git rebase --continue`. That is not a
-PowerShell assignment, and git opens an editor. `git rebase
---continue` alone is enough when `GIT_EDITOR` is already `true`.
+every conflict marker, and `git add` of that file only. Continue by
+running the continue command named in the user message. That command
+is a shell script on Windows and on Linux. It sets `GIT_EDITOR` for
+that one command. Do not write `GIT_EDITOR=true git rebase --continue`
+and do not use a PowerShell `$env:GIT_EDITOR` assignment. `git -c
+core.editor=` does not override an inherited `GIT_EDITOR`.
 
 Abort with `git rebase --abort` when a conflicted path is binary, git
 says the file is binary, or the conflict is too large to resolve
