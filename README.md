@@ -26,7 +26,7 @@ skills/           # -> ~/.opencode/skills and ~/.claude/skills
 ```
 
 `agents/` is what OpenCode loads. `claude-agents/` is the same five
-roles for Claude Code. Yaver Sync and `install-agents` copy each agent
+roles for Claude Code. Mirai Sync and `install-agents` copy each agent
 tree into that harness, and copy `skills/` into both homes.
 The instruction is the same. The header, tool names, and skill calls
 follow the harness that reads the file.

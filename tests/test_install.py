@@ -153,8 +153,8 @@ class ReplaceInstall(unittest.TestCase):
         for name in ("derman-plan.md", "derman-build.md", "derman-test.md"):
             text = (ROOT / "agents" / name).read_text(encoding="utf-8")
             self.assertNotIn("KAN-481", text, name)
-            self.assertNotIn("C:\\vd\\yaver", text, name)
-            self.assertNotIn("/vd/yaver", text, name)
+            self.assertNotIn("C:\\vd\\mirai", text, name)
+            self.assertNotIn("/vd/mirai", text, name)
             self.assertIn("current working directory", text, name)
             self.assertIn("parent directory", text, name)
             self.assertIn("host data", text, name)

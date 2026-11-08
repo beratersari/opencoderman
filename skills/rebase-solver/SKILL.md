@@ -1,13 +1,13 @@
 ---
 name: rebase-solver
-description: Resolve a rebase onto the target branch that stopped on conflicts. Use when Yaver names repositories whose rebase onto the target failed.
+description: Resolve a rebase onto the target branch that stopped on conflicts. Use when Mirai names repositories whose rebase onto the target failed.
 license: MIT
 compatibility: opencode
 ---
 
 # Rebase solver
 
-Yaver already ran `git rebase origin/<target>` on the work branch. Finish that rebase. Do not ask questions. Do not push.
+Mirai already ran `git rebase origin/<target>` on the work branch. Finish that rebase. Do not ask questions. Do not push.
 
 ## Which repository
 

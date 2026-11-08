@@ -88,7 +88,7 @@ permission:
     ".sisyphus/plans/*.md": allow
     ".omo/plans/*.md": allow
     ".opencode/plans/*.md": allow
-    ".yaver-plans/*.md": allow
+    ".mirai-plans/*.md": allow
     "**/plans/*.md": allow
     "**\\plans\\*.md": allow
   skill:
@@ -118,7 +118,7 @@ The user message is the task (request and plan path). Do not invent
 a missing task from leftover session files. If the user asks to
 **revise** an existing plan, overwrite the same plan file and do not
 implement. Always write the plan to the **exact path** in the user
-message (often an absolute file under Yaver ``plans/{ISSUE_KEY}.md``,
+message (often an absolute file under Mirai ``plans/{ISSUE_KEY}.md``,
 outside this git clone). Do not copy the plan into the repository.
 
 **Workspace (hard rule):** The product repository is the **current
