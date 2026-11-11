@@ -195,6 +195,7 @@ class ReplaceInstall(unittest.TestCase):
             "derman-reviewer.md",
             "derman-rebase.md",
             "rebase_reviewer.md",
+            "derman-pushfix.md",
         ):
             text = (ROOT / "agents" / name).read_text(encoding="utf-8")
             block = self._skill_block(text)

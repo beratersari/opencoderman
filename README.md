@@ -17,6 +17,7 @@ agents/           # OpenCode -> ~/.opencode/agents/<name>.md
   derman-test.md      # General unattended tester (unit tests only)
   derman-rebase.md    # Unattended rebase conflict solver (not a ticket implementer)
   rebase_reviewer.md  # Reviews a finished /solveConflict rebase
+  derman-pushfix.md   # Fixes a rejected push locally. Does not push
 claude-agents/    # Claude Code -> ~/.claude/agents/<name>.md
   derman-build.md     # Same job rules, Claude tools and Skill wording
   derman-plan.md
@@ -24,10 +25,11 @@ claude-agents/    # Claude Code -> ~/.claude/agents/<name>.md
   derman-reviewer.md
   derman-rebase.md
   rebase_reviewer.md
+  derman-pushfix.md
 skills/           # -> ~/.opencode/skills and ~/.claude/skills
 ```
 
-`agents/` is what OpenCode loads. `claude-agents/` is the same six
+`agents/` is what OpenCode loads. `claude-agents/` is the same seven
 roles for Claude Code. Mirai Sync and `install-agents` copy each agent
 tree into that harness, and copy `skills/` into both homes.
 The instruction is the same. The header, tool names, and skill calls
