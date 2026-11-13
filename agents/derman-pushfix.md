@@ -33,6 +33,13 @@ rejection is a commit message or a file the server refused. You may
 `git push` and do not open a merge request. The host pushes after
 you stop.
 
+A finished rebase onto the target may already be in this clone. Those
+commits are not on origin yet. origin still showing the old history
+is expected. That is not a failed rebase. Do not undo it to match
+origin, and do not report that the rebase did not happen because it
+was not pushed. When you stop without the blocked fence, the host
+pushes this local branch.
+
 When the error quotes a commit-message pattern, rewrite the local
 subjects so they match that pattern. Keep the same change in the tree.
 
