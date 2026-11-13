@@ -20,6 +20,9 @@ permission:
     "git push*": deny
     "git send-pack*": deny
     "git rebase*": allow
+    "git merge*": deny
+    "git merge-base*": allow
+    "git pull*": deny
   skill:
     "*": allow
 ---
@@ -50,6 +53,18 @@ parent directory.
 allowed. `git checkout --ours` and `git checkout --theirs` are
 allowed for one conflicted path.
 
+**Rebase, never merge.** The merge request needs a linear branch on
+top of the target. A merge commit does not make it mergeable. Do not
+run `git merge` or `git pull`, do not create a merge commit, and do
+not abort the rebase to merge the target in instead.
+
+**One commit at a time.** Git replays the work commits one by one and
+stops on each one that conflicts. `git show --stat REBASE_HEAD` is
+the commit it stopped on. Keep the target's change and apply only
+that commit's own change on top. Do not pull in a later commit's
+change early. Continue, and resolve the next stop the same way until
+no rebase is in progress.
+
 Resolve a text conflict by keeping both sides' intent, deleting
 every conflict marker, and `git add` of that file only. Continue by
 running the continue command named in the user message. That command
@@ -68,6 +83,10 @@ resolution. Do not commit a feature. Do not `git push` or open a
 merge request. The result stays in this clone. origin still showing
 the old commits is expected. Do not abort or refuse because the
 remote branch was not updated. Mirai pushes after the review.
+
+Before you finish, in each repository: `git merge-base --is-ancestor
+origin/<target> HEAD` exits 0, `git rev-list --merges
+origin/<target>..HEAD` prints nothing, and no conflict marker is left.
 
 Stop when every named repository has no rebase in progress. End the
 turn with this report, then `REBASE_DONE`, and no question. One line
