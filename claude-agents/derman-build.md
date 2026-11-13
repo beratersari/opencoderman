@@ -110,6 +110,17 @@ Workflow:
    `git send-pack`, or open a merge request — the host orchestrator
    delivers the branch. Do **not** commit secrets.
 
+If the request asks to rebase this branch onto the target, replay it
+onto that branch, or solve conflicts by rebasing, do not start. Do
+not run `git rebase`, `git pull --rebase`, or `git merge` for that
+request. Reply that the request is a rebase and this agent does not
+do it, and that the operator should comment `@bot /solveConflict` on
+the GitLab merge request or the Azure pull request. Stop that part.
+Rewriting a commit subject stays allowed. A tip subject is
+`git commit --amend` with no staged files. Older subjects stay
+`git commit --fixup=reword:<full-sha>` and
+`git rebase -i --autosquash`. That rewrite is not this rebase.
+
 Commit messages — copy **this repo's** git history. This is a hard
 gate. A subject from a different project is a failed commit.
 
