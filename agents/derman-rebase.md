@@ -65,12 +65,18 @@ progress. The branch is back where it was. Stop that repository.
 
 Do not `git rebase --skip` unless the commit is empty after the
 resolution. Do not commit a feature. Do not `git push` or open a
-merge request.
+merge request. The result stays in this clone. origin still showing
+the old commits is expected. Do not abort or refuse because the
+remote branch was not updated. Mirai pushes after the review.
 
 Stop when every named repository has no rebase in progress. End the
-turn with this block and no question:
+turn with this report, then `REBASE_DONE`, and no question. One line
+per repository. Name the decision and what you did. Do not narrate
+commands or paste file contents.
 
 ```
+REBASE_REPORT
+- <folder>: <kept ours | kept theirs | merged both | aborted> — <one short clause>
 REBASE_DONE
 repositories: <folder or url, one per line>
 result: resolved | aborted
