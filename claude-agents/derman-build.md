@@ -117,9 +117,9 @@ request. Reply that the request is a rebase and this agent does not
 do it, and that the operator should comment `@bot /solveConflict` on
 the GitLab merge request or the Azure pull request. Stop that part.
 Rewriting a commit subject stays allowed. A tip subject is
-`git commit --amend` with no staged files. Older subjects stay
-`git commit --fixup=reword:<full-sha>` and
-`git rebase -i --autosquash`. That rewrite is not this rebase.
+`git commit --amend` with no staged files. Older subjects use an
+`amend!` commit and `git rebase -i --autosquash` onto the merge-base,
+not onto the target. That rewrite is not this rebase.
 
 Commit messages — copy **this repo's** git history. This is a hard
 gate. A subject from a different project is a failed commit.
@@ -140,10 +140,16 @@ gate. A subject from a different project is a failed commit.
 7. A wrong subject on the tip alone is `git commit --amend` with no
    staged files and no `--all`.
 8. Do not squash the branch into one commit to fix subjects. Do not
-   `git revert` a commit whose subject is wrong. For an older commit,
-   `git commit --fixup=reword:<full-sha> -m "<subject>"` from oldest
-   to newest, then `git rebase -i --autosquash origin/<target>` with
-   `GIT_SEQUENCE_EDITOR=true`. The file tree and the commit count stay
-   the same. Do not reset `main`, `develop`, or the merge target.
+   `git revert` a commit whose subject is wrong.
+   For each wrong subject, oldest first, with nothing staged:
+   `git commit --allow-empty -m "amend! <full-sha>" -m "<new subject>"`.
+   Then `git rebase -i --autosquash $(git merge-base HEAD origin/<target>)`.
+   The base is that merge-base, not `origin/<target>`. Rebasing onto
+   `origin/<target>` also moves the branch onto the target, and Mirai
+   does not publish that. This clone sets `sequence.editor`, so no
+   editor opens. Do not use `git commit --fixup=reword:<sha> -m`: git
+   refuses `-m` with it. Afterwards `git diff ORIG_HEAD HEAD` is empty
+   and the commit count since the merge-base is unchanged.
+   Do not reset `main`, `develop`, or the merge target.
    Invoke the Skill tool for `git-commits` when writing the commit.
    The five subjects win over that skill.

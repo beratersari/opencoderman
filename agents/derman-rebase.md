@@ -84,9 +84,11 @@ merge request. The result stays in this clone. origin still showing
 the old commits is expected. Do not abort or refuse because the
 remote branch was not updated. Mirai pushes after the review.
 
-Before you finish, in each repository: `git merge-base --is-ancestor
-origin/<target> HEAD` exits 0, `git rev-list --merges
-origin/<target>..HEAD` prints nothing, and no conflict marker is left.
+Before you finish, in each repository you did not abort: `git
+merge-base --is-ancestor origin/<target> HEAD` exits 0, `git rev-list
+--merges origin/<target>..HEAD` prints nothing, and no conflict
+marker is left. An aborted repository skips these checks. Do not
+start its rebase again.
 
 Stop when every named repository has no rebase in progress. End the
 turn with this report, then `REBASE_DONE`, and no question. One line

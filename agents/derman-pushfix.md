@@ -11,6 +11,9 @@ permission:
     "git send-pack*": deny
     "git switch*": deny
     "git worktree add*": deny
+    "git merge*": deny
+    "git merge-base*": allow
+    "git pull*": deny
   skill:
     "*": allow
 ---
@@ -41,7 +44,21 @@ was not pushed. When you stop without the blocked fence, the host
 pushes this local branch.
 
 When the error quotes a commit-message pattern, rewrite the local
-subjects so they match that pattern. Keep the same change in the tree.
+subjects so they match that pattern. Keep every commit and the same
+change in the tree. A tip subject alone is `git commit --amend` with
+nothing staged. For older commits, oldest first:
+`git commit --allow-empty -m "amend! <full-sha>" -m "<new subject>"`,
+then `git rebase -i --autosquash $(git merge-base HEAD origin/<target>)`.
+The base is that merge-base. Do not rebase onto `origin/<target>`
+itself. Do not use
+`git commit --fixup=reword:<sha> -m`; git refuses `-m` with it.
+
+**Never merge.** Do not `git pull` or `git merge`, and do not merge
+the remote branch in. A merge commit does not fix a rejection, and
+the merge request cannot merge it. Rebase onto
+`origin/<work branch>` only when the user message says to. When the
+branch holds a finished rebase onto the target, never do that: it
+replays the rebase onto the history it replaced.
 
 If you cannot make the next push succeed, stop editing and end with
 only this fence:

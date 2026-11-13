@@ -26,10 +26,16 @@ down.
    leave the ticket id out in that fallback.
 6. A wrong subject on the tip alone is `git commit --amend` with no
    staged files and no `--all`.
-7. Do not squash the branch into one commit to fix a subject. For an
-   older commit, `git commit --fixup=reword:<full-sha>` with the new
-   subject, then `git rebase -i --autosquash origin/<target>` with
-   `GIT_SEQUENCE_EDITOR=true`. Keep every commit and its files.
+7. Do not squash the branch into one commit to fix a subject.
+   For each wrong subject, oldest first, with nothing staged:
+   `git commit --allow-empty -m "amend! <full-sha>" -m "<new subject>"`.
+   Then `git rebase -i --autosquash $(git merge-base HEAD origin/<target>)`.
+   The base is that merge-base, not `origin/<target>`. Rebasing onto
+   `origin/<target>` also moves the branch onto the target, and Mirai
+   does not publish that. This clone sets `sequence.editor`, so no
+   editor opens. Do not use `git commit --fixup=reword:<sha> -m`: git
+   refuses `-m` with it. Afterwards `git diff ORIG_HEAD HEAD` is empty
+   and the commit count since the merge-base is unchanged.
 
 ## Rules
 

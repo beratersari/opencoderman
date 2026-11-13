@@ -34,7 +34,7 @@ A rebase replays the work commits one by one. Git stops on each commit that conf
 
 ## Check before you finish
 
-From the repository, with `<target>` the target branch:
+For a rebase you finished, from the repository, with `<target>` the target branch:
 
 - `git status` shows no rebase in progress.
 - `git merge-base --is-ancestor origin/<target> HEAD` exits 0.
@@ -42,6 +42,8 @@ From the repository, with `<target>` the target branch:
 - `git grep -n -e '^<<<<<<< ' -e '^>>>>>>> '` prints nothing.
 
 If a check fails, fix it in this rebase. Do not add a merge commit to pass it.
+
+A rebase you aborted under "When to abort" skips these checks. Only `git status` showing no rebase in progress applies. Do not start it again.
 
 ## When to abort
 

@@ -240,9 +240,15 @@ gate. A subject from a different project is a failed commit.
 6. A wrong subject on the tip alone is `git commit --amend` with no
    staged files and no `--all`.
 7. Do not squash the branch into one commit to fix subjects. Do not
-   `git revert` a commit whose subject is wrong. For an older commit,
-   `git commit --fixup=reword:<full-sha> -m "<subject>"`, then
-   `git rebase -i --autosquash origin/<target>` with
-   `GIT_SEQUENCE_EDITOR=true`. Keep the file tree and the commit count.
+   `git revert` a commit whose subject is wrong.
+   For each wrong subject, oldest first, with nothing staged:
+   `git commit --allow-empty -m "amend! <full-sha>" -m "<new subject>"`.
+   Then `git rebase -i --autosquash $(git merge-base HEAD origin/<target>)`.
+   The base is that merge-base, not `origin/<target>`. Rebasing onto
+   `origin/<target>` also moves the branch onto the target, and Mirai
+   does not publish that. This clone sets `sequence.editor`, so no
+   editor opens. Do not use `git commit --fixup=reword:<sha> -m`: git
+   refuses `-m` with it. Afterwards `git diff ORIG_HEAD HEAD` is empty
+   and the commit count since the merge-base is unchanged.
    Invoke the Skill tool for `git-commits` when writing the commit.
    The five subjects win over that skill.

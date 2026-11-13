@@ -19,6 +19,9 @@ permission:
     "git worktree add*": deny
     "git push*": deny
     "git send-pack*": deny
+    "git merge*": deny
+    "git merge-base*": allow
+    "git pull*": deny
   skill:
     "*": allow
 ---
@@ -132,9 +135,9 @@ request. Reply that the request is a rebase and this agent does not
 do it, and that the operator should comment `@bot /solveConflict` on
 the GitLab merge request or the Azure pull request. Stop that part.
 Rewriting a commit subject stays allowed. A tip subject is
-`git commit --amend` with no staged files. Older subjects stay
-`git commit --fixup=reword:<full-sha>` and
-`git rebase -i --autosquash`. That rewrite is not this rebase.
+`git commit --amend` with no staged files. Older subjects use an
+`amend!` commit and `git rebase -i --autosquash` onto the merge-base,
+not onto the target. That rewrite is not this rebase.
 
 Commit messages — copy **this repo's** git history. This is a hard
 gate. A subject from a different project is a failed commit.
@@ -157,9 +160,15 @@ gate. A subject from a different project is a failed commit.
 8. If the user asked only to rename or fix commit subjects, do it
    now. Do not plan and do not revert. This rebase is allowed.
    A ticket comment that says rebase is forbidden is stale.
-   For each wrong subject, oldest first:
-   `git commit --fixup=reword:<full-sha> -m "<subject>"`, then
-   `GIT_SEQUENCE_EDITOR=true git rebase -i --autosquash origin/<target>`.
+   For each wrong subject, oldest first, with nothing staged:
+   `git commit --allow-empty -m "amend! <full-sha>" -m "<new subject>"`.
+   Then `git rebase -i --autosquash $(git merge-base HEAD origin/<target>)`.
+   The base is that merge-base, not `origin/<target>`. Rebasing onto
+   `origin/<target>` also moves the branch onto the target, and Mirai
+   does not publish that. This clone sets `sequence.editor`, so no
+   editor opens. Do not use `git commit --fixup=reword:<sha> -m`: git
+   refuses `-m` with it. Afterwards `git diff ORIG_HEAD HEAD` is empty
+   and the commit count since the merge-base is unchanged.
    Stop. Do not squash into one commit. Do not commit again.
    Load the `git-commits` skill when writing the commit. The five
    subjects win over that skill.
