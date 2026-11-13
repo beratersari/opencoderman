@@ -259,12 +259,17 @@ gate. A subject from a different project is a failed commit.
    staged files and no `--all`.
 7. Do not squash the branch into one commit to fix subjects. Do not
    `git revert` a commit whose subject is wrong.
-   For each wrong subject, oldest first, with nothing staged:
-   `git commit --allow-empty -m "amend! <full-sha>" -m "<new subject>"`.
-   Then `git rebase -i --autosquash $(git merge-base HEAD origin/<target>)`.
-   The base is that merge-base, not `origin/<target>`. Rebasing onto
-   `origin/<target>` also moves the branch onto the target, and Mirai
-   does not publish that. This clone sets `sequence.editor`, so no
-   editor opens. Do not use `git commit --fixup=reword:<sha> -m`: git
-   refuses `-m` with it. Afterwards `git diff ORIG_HEAD HEAD` is empty
-   and the commit count since the merge-base is unchanged.
+   Rename older subjects with these commands. They work on every git
+   version and open no editor. Only commits in `origin/<target>..HEAD`
+   can be renamed. Start with nothing uncommitted.
+   `git rev-parse HEAD` is the old tip. List the commits to replay,
+   oldest first:
+   `git log --reverse --format=%H%x09%s <oldest-wrong-sha>~1..HEAD`.
+   Then `git reset --hard <oldest-wrong-sha>~1`. For each listed commit,
+   in that order: `git cherry-pick <sha>`, and when its subject is
+   wrong, `git commit --amend -m "<new subject>"` right after it.
+   Afterwards `git diff <old-tip> HEAD` prints nothing and the commit
+   count is unchanged. If a step fails, `git cherry-pick --abort`, then
+   `git reset --hard <old-tip>`. Do not `git rebase` for a rename: onto
+   `origin/<target>` it also moves the branch, and Mirai does not
+   publish that.

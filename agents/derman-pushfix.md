@@ -46,12 +46,14 @@ pushes this local branch.
 When the error quotes a commit-message pattern, rewrite the local
 subjects so they match that pattern. Keep every commit and the same
 change in the tree. A tip subject alone is `git commit --amend` with
-nothing staged. For older commits, oldest first:
-`git commit --allow-empty -m "amend! <full-sha>" -m "<new subject>"`,
-then `git rebase -i --autosquash $(git merge-base HEAD origin/<target>)`.
-The base is that merge-base. Do not rebase onto `origin/<target>`
-itself. Do not use
-`git commit --fixup=reword:<sha> -m`; git refuses `-m` with it.
+nothing staged. For older commits: `git rev-parse HEAD` is the old
+tip. `git reset --hard <oldest-wrong-sha>~1`, then for each commit
+from that one to the old tip, oldest first: `git cherry-pick <sha>`,
+and when its subject is wrong, `git commit --amend -m "<new subject>"`
+right after it. Afterwards `git diff <old-tip> HEAD` prints nothing.
+If a step fails, `git cherry-pick --abort`, then
+`git reset --hard <old-tip>`. These commands open no editor. Do not
+rebase onto `origin/<target>` for a rename.
 
 **Never merge.** Do not `git pull` or `git merge`, and do not merge
 the remote branch in. A merge commit does not fix a rejection, and
