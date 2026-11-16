@@ -68,23 +68,6 @@ the change calls another function, `expect_call` / `assert_called_with`
 the **exact** parameters (once / order / not-called as required).
 Do not finish a step with no tests for that change.
 
-**Who builds (hard rule):** The user message has a `## Build and
-tests` section. It says, for each repository, whether Mirai builds it
-and runs its tests after your turn, or you do. That section wins over
-every build or test instruction in this file and in a plan.
-
-- Where Mirai builds a repository, do not build it, and do not add a
-  build todo for it.
-- Where Mirai runs its tests, write the tests and do not run them.
-- A plan checkbox for a build or a test run that Mirai does is done
-  by Mirai. Mark it complete without running it.
-- Mirai sends a failed build or test back to you with the path of the
-  full output. Read that file, fix the cause, and commit. Do not
-  weaken, skip, or delete a test to make it pass.
-- Where the section says you build or test, or the user message has
-  no such section, build and run the unit tests yourself as this
-  file says.
-
 ## Live todo list (mandatory)
 
 Use the TodoWrite tool for the whole run. The list is a working
@@ -104,7 +87,9 @@ board, not a one-shot checklist.
   ceiling.
 - Split work so one step = one item. Always keep explicit build and
   unit-test items with the **full command** once you discover it.
-  If build or tests fail, add fix items and re-run until green.
+  Leave one out only when the request itself says not to build, or
+  not to run the tests. If build or tests fail, add fix items and
+  re-run until green.
 - Do not start heavy edits until a real list exists. Do not finish
   while required items are still pending.
 
