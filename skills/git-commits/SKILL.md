@@ -25,7 +25,9 @@ down.
    subjects already use it, or they share no pattern at all. Still
    leave the ticket id out in that fallback.
 6. A wrong subject on the tip alone is `git commit --amend` with no
-   staged files and no `--all`.
+   staged files and no `--all`. A file change is always a new commit
+   on top. Never amend, fixup, or squash it into a commit that was on
+   the branch when the job started: that commit is already published.
 7. Do not squash the branch into one commit to fix a subject.
    Rename older subjects with these commands. They work on every git
    version and open no editor. Only commits in `origin/<target>..HEAD`

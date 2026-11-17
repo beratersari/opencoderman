@@ -111,6 +111,13 @@ Workflow:
 5. Commit locally if files changed. Do **not** `git push`,
    `git send-pack`, or open a merge request — the host orchestrator
    delivers the branch. Do **not** commit secrets.
+   Commits that were on the branch when this job started are already
+   on the merge request. Put every file change in a **new commit** on
+   top of them. Do not fold a fix into one of them: no
+   `git commit --amend` with staged files or `--all`, no `--fixup` or
+   `--squash`, no squash, and no `git reset` followed by a new commit.
+   That rewrites published history. A new commit is correct even when
+   the fix belongs to the previous commit.
 
 If the request asks to rebase this branch onto the target, replay it
 onto that branch, or solve conflicts by rebasing, do not start. Do
